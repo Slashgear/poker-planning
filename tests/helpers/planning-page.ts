@@ -20,13 +20,13 @@ export class PlanningPage {
 
   // Verify that a participant has voted
   async expectParticipantVoted(userName: string) {
-    const participantCard = this.page.locator(`div:has-text("${userName}")`).first()
+    const participantCard = this.page.locator('.grid > div').filter({ hasText: userName })
     await expect(participantCard).toContainText('✓')
   }
 
   // Verify that a participant has not voted
   async expectParticipantNotVoted(userName: string) {
-    const participantCard = this.page.locator(`div:has-text("${userName}")`).first()
+    const participantCard = this.page.locator('.grid > div').filter({ hasText: userName })
     await expect(participantCard).toContainText('?')
   }
 
@@ -37,7 +37,7 @@ export class PlanningPage {
 
   // Verify the result of a revealed vote
   async expectRevealedVote(userName: string, value: string | number) {
-    const participantCard = this.page.locator(`div:has-text("${userName}")`).first()
+    const participantCard = this.page.locator('.grid > div').filter({ hasText: userName })
     await expect(participantCard).toContainText(value.toString())
   }
 
