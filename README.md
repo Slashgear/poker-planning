@@ -1,8 +1,8 @@
 # Poker Planning
 
 [![CI/CD](https://github.com/Slashgear/poker-planning/actions/workflows/ci.yml/badge.svg)](https://github.com/Slashgear/poker-planning/actions/workflows/ci.yml)
-[![Staging](https://img.shields.io/badge/staging-deployed-blue)](https://poker-planning-staging.example.com)
-[![Production](https://img.shields.io/badge/production-deployed-green)](https://poker-planning.example.com)
+[![Staging](https://img.shields.io/badge/staging-deployed-blue)](https://poker-staging.slashgear.dev)
+[![Production](https://img.shields.io/badge/production-deployed-green)](https://poker.slashgear.dev)
 
 Collaborative poker planning web application for agile team estimation using the Fibonacci sequence.
 
