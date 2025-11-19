@@ -15,7 +15,7 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   # Scaleway Serverless Container
-  SCW_REGION: fr-par
+  SCW_DEFAULT_REGION: fr-par
 
 jobs:
   # Job: Install dependencies
@@ -340,7 +340,8 @@ jobs:
             secret-key=${{ secrets.SCW_SECRET_KEY }} \
             access-key=${{ secrets.SCW_ACCESS_KEY }} \
             project-id=${{ secrets.SCW_PROJECT_ID }} \
-            region=${{ env.SCW_REGION }} \
+            organization-id=${{ secrets.SCW_ORGANIZATION_ID }} \
+            default-region=${{ env.SCW_DEFAULT_REGION }} \
             send-telemetry=false \
             install-autocomplete=false
 
@@ -348,7 +349,7 @@ jobs:
         run: |
           scw container container update \
             ${{ secrets.SCW_STAGING_CONTAINER_ID }} \
-            region=${{ env.SCW_REGION }} \
+            region=${{ env.SCW_DEFAULT_REGION }} \
             registry-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             redeploy=true
 
@@ -371,7 +372,8 @@ jobs:
             secret-key=${{ secrets.SCW_SECRET_KEY }} \
             access-key=${{ secrets.SCW_ACCESS_KEY }} \
             project-id=${{ secrets.SCW_PROJECT_ID }} \
-            region=${{ env.SCW_REGION }} \
+            organization-id=${{ secrets.SCW_ORGANIZATION_ID }} \
+            default-region=${{ env.SCW_DEFAULT_REGION }} \
             send-telemetry=false \
             install-autocomplete=false
 
@@ -379,6 +381,6 @@ jobs:
         run: |
           scw container container update \
             ${{ secrets.SCW_PRODUCTION_CONTAINER_ID }} \
-            region=${{ env.SCW_REGION }} \
+            region=${{ env.SCW_DEFAULT_REGION }} \
             registry-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} \
             redeploy=true
