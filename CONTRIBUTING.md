@@ -234,6 +234,77 @@ tests/
 - [ ] No forgotten console.logs (except for intentional debugging)
 - [ ] Accessibility is maintained (aria-labels, etc.)
 
+## Release Process
+
+This project uses semantic versioning and GitHub Actions for automated releases.
+
+### Version Convention
+
+Follow [Semantic Versioning](https://semver.org/):
+- **MAJOR** (`v2.0.0`): Breaking changes
+- **MINOR** (`v1.1.0`): New features, backward compatible
+- **PATCH** (`v1.0.1`): Bug fixes, backward compatible
+
+### Creating a Release
+
+1. **Ensure main is up to date and CI passes**
+   ```bash
+   git checkout main
+   git pull origin main
+   ```
+
+2. **Update version in package.json** (if applicable)
+   ```bash
+   pnpm version patch  # or minor, major
+   ```
+
+3. **Create and push a tag**
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+4. **CI will automatically:**
+   - Run all tests and linting
+   - Build the application
+   - Build and push Docker image to GitHub Container Registry
+   - Tag the image with the version (e.g., `ghcr.io/owner/repo:1.0.0`)
+
+5. **Deploy to production**
+   - Go to GitHub Actions
+   - Find the workflow run for your tag
+   - The `deploy-production` job will deploy to Scaleway
+
+### Release Checklist
+
+- [ ] All tests pass on main branch
+- [ ] CHANGELOG updated (if maintained)
+- [ ] Version bumped in package.json
+- [ ] Tag follows format `vX.Y.Z`
+- [ ] Docker image built and pushed successfully
+- [ ] Production deployment verified
+
+### Hotfix Process
+
+For urgent fixes on production:
+
+1. Create a hotfix branch from the latest tag
+   ```bash
+   git checkout -b hotfix/critical-fix v1.0.0
+   ```
+
+2. Make the fix and test
+
+3. Merge to main via PR
+
+4. Create a new patch version tag
+   ```bash
+   git checkout main
+   git pull
+   git tag v1.0.1
+   git push origin v1.0.1
+   ```
+
 ## Questions?
 
 Feel free to:
