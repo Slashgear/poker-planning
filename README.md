@@ -8,13 +8,15 @@ Collaborative poker planning web application for agile team estimation using the
 
 ## Features
 
-- **Real-time planning session** with SSE (Server-Sent Events) synchronization
+- **Dynamic rooms** with shareable 6-character codes
+- **Real-time synchronization** with SSE (Server-Sent Events)
 - **Anonymous votes** until collective reveal
-- **Fibonacci sequence** for estimation (0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, ?)
-- **Automatic statistics** (average, mode, vote count)
-- **Team configuration** via JSON file or environment variable
-- **Modern interface** with animations and visual effects
-- **Multi-user** - multiple people can vote simultaneously
+- **Fibonacci sequence** for estimation (1, 2, 3, 5, 8, 13, 21, ?, coffee)
+- **Automatic statistics** (average)
+- **Confetti celebration** when all votes match
+- **Session persistence** via httpOnly cookies (2 hours)
+- **Auto-cleanup** of inactive members (5 minutes)
+- **Member management** - any member can remove others
 
 ## Tech Stack
 
@@ -22,18 +24,20 @@ Collaborative poker planning web application for agile team estimation using the
 - **React 19** with TypeScript
 - **Vite 7** for build and dev server
 - **Tailwind CSS 4** for styling
-- **TanStack** (Query, Router, Table)
+- **TanStack Router** for client-side routing
 
 ### Backend
-- **Hono** - Lightweight web framework for SSE server
+- **Hono** - Lightweight web framework
 - **Server-Sent Events** for real-time synchronization
 - **Node.js** with TypeScript
+- **In-memory storage** with automatic cleanup
 
 ### Tests
-- **Playwright** for multi-user end-to-end tests
+- **Playwright** for end-to-end tests
 
-### Linting
+### Linting & Formatting
 - **oxlint** for fast JavaScript/TypeScript linting
+- **oxfmt** for code formatting
 
 ## Quick Start
 
@@ -61,30 +65,26 @@ pnpm exec playwright install chromium
 The application requires 2 servers running in parallel:
 
 ```bash
-# Terminal 1 - SSE server
+# Terminal 1 - API server
 pnpm run dev:server
 
 # Terminal 2 - Vite frontend
 pnpm run dev
 ```
 
-Then open multiple browsers/tabs at:
+Then open:
 - **Frontend**: http://localhost:5173
-- **SSE API**: http://localhost:3001
+- **API**: http://localhost:3001
 
-### Team Configuration
+## Usage
 
-Edit the `team.config.json` file to define your team members:
-
-```json
-["Alice", "Bob", "Charlie", "Diana"]
-```
-
-You can also override the team via environment variable:
-
-```bash
-VITE_TEAM_MEMBERS="Alice,Bob,Charlie" pnpm run dev
-```
+1. **Create a room**: Click "Create a Room" on the homepage
+2. **Share the link**: Copy the room URL to invite team members
+3. **Join**: Each member enters their name to join
+4. **Vote**: Click a Fibonacci card to vote
+5. **Reveal**: Any member can reveal all votes
+6. **Celebrate**: Confetti appears when everyone agrees!
+7. **Reset**: Start a new estimation round
 
 ## Tests
 
@@ -102,15 +102,13 @@ pnpm test:headed
 pnpm test:report
 ```
 
-Tests simulate complete sessions with multiple users voting simultaneously and verify real-time synchronization.
-
-## Linting
+## Linting & Formatting
 
 ```bash
 # Run linter
 pnpm lint
 
-# Fix auto-fixable issues
+# Format code
 pnpm format
 ```
 
@@ -118,78 +116,59 @@ pnpm format
 
 ```
 poc-er-planning/
-├── server/              # Hono SSE server
+├── server/              # Hono API server
 │   └── index.ts        # API endpoints and SSE handling
 ├── src/
-│   ├── components/     # React components
-│   │   ├── PlanningSession.tsx
-│   │   └── PlanningCard.tsx
+│   ├── pages/          # Page components
+│   │   ├── Home.tsx    # Homepage with room creation
+│   │   └── Room.tsx    # Room with voting interface
 │   ├── hooks/          # Custom hooks
-│   │   └── usePlanningSession.ts
-│   ├── lib/            # Utilities
-│   │   └── teamConfig.ts
-│   ├── types/          # TypeScript types
-│   │   └── team.ts
-│   ├── App.tsx
+│   │   ├── useRoom.ts  # Room state and actions
+│   │   └── useConfetti.ts
+│   ├── routeTree.gen.ts # TanStack Router configuration
 │   ├── main.tsx
 │   └── index.css
 ├── tests/              # Playwright tests
-│   ├── helpers/
-│   │   └── planning-page.ts
-│   └── planning-session.spec.ts
-├── team.config.json    # Team configuration
 └── playwright.config.ts
 ```
 
-## Usage Flow
+## API Endpoints
 
-1. **User selection**: Each member opens the app and selects their name
-2. **Voting**: Each member clicks a Fibonacci card to vote
-3. **Synchronization**: Votes are synchronized in real-time via SSE
-4. **Reveal**: Anyone can reveal votes (even if not everyone has voted)
-5. **Statistics**: Automatic display of average, mode, and vote count
-6. **New estimation**: Reset the session for a new task
+- `POST /api/rooms` - Create a new room
+- `POST /api/rooms/:code/join` - Join a room
+- `GET /api/rooms/:code` - Get room info
+- `GET /api/rooms/:code/events` - SSE connection for updates
+- `POST /api/rooms/:code/vote` - Submit a vote
+- `POST /api/rooms/:code/reveal` - Reveal all votes
+- `POST /api/rooms/:code/reset` - Reset the session
+- `DELETE /api/rooms/:code/members/:id` - Remove a member
 
-## SSE Architecture
+## Architecture
 
-The system uses Server-Sent Events for synchronization:
+### Room System
+- Rooms are identified by 6-character codes (e.g., `ABC123`)
+- Members are tracked via session cookies (httpOnly, 2h expiry)
+- Inactive members are automatically removed after 5 minutes
+- Empty rooms are automatically deleted
 
-- **Hono server** maintains shared state in memory
-- **Automatic broadcast** to all connected clients
-- **Automatic reconnection** on connection loss
-- **Regular ping** to keep connection alive
-
-### API Endpoints
-
-- `GET /events` - SSE connection for updates
-- `POST /vote` - Record a vote
-- `POST /init-votes` - Initialize votes for a user
-- `POST /reveal` - Reveal all votes
-- `POST /reset` - Reset the session
-- `GET /state` - Get current state
-
-## Design
-
-The interface uses:
-- Purple/pink/slate gradient background
-- Frosted glass effects (backdrop blur)
-- Smooth animations with Tailwind
-- Interactive poker cards with hover effects
-- Responsive design
+### Real-time Updates
+- Server-Sent Events broadcast room state to all connected clients
+- Automatic reconnection on connection loss
+- Keep-alive pings every 30 seconds
 
 ## Available Scripts
 
 ```bash
 pnpm run dev          # Start Vite dev server
-pnpm run dev:server   # Start SSE server
+pnpm run dev:server   # Start API server
 pnpm run build        # Production build
 pnpm run preview      # Preview build
-pnpm lint            # Run linter
-pnpm format          # Fix linting issues
-pnpm test            # Run Playwright tests
-pnpm test:ui         # Tests in interactive UI mode
-pnpm test:headed     # Tests with visible browser
-pnpm test:report     # Show test report
+pnpm lint             # Run linter
+pnpm format           # Format code
+pnpm test             # Run Playwright tests
+pnpm test:ui          # Tests in interactive UI mode
+pnpm test:headed      # Tests with visible browser
+pnpm test:report      # Show test report
 ```
 
 ## Contributing
