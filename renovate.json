@@ -1,0 +1,40 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":automergeMinor",
+    "group:allNonMajor"
+  ],
+  "labels": ["dependencies"],
+  "rangeStrategy": "pin",
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    },
+    {
+      "matchPackageNames": ["node"],
+      "matchManagers": ["dockerfile"],
+      "enabled": true
+    },
+    {
+      "groupName": "playwright",
+      "matchPackagePatterns": ["^@playwright/", "^playwright"]
+    },
+    {
+      "groupName": "tanstack",
+      "matchPackagePatterns": ["^@tanstack/"]
+    },
+    {
+      "groupName": "testing",
+      "matchPackagePatterns": ["vitest", "playwright"]
+    }
+  ],
+  "schedule": ["before 7am on monday"]
+}
