@@ -1,5 +1,5 @@
 # Build stage
-FROM docker.internal.scaleway.com/node:22.16.0-alpine AS builder
+FROM ghcr.io/nodejs/node:22.16.0-alpine AS builder
 
 WORKDIR /app
 
@@ -22,7 +22,7 @@ RUN pnpm run build
 RUN pnpm exec tsc server/index.ts --outDir server-dist --module ESNext --moduleResolution bundler --target ES2022 --esModuleInterop --skipLibCheck
 
 # Production stage - Node.js server serving both API and static files
-FROM docker.internal.scaleway.com/node:22.16.0-alpine AS production
+FROM ghcr.io/nodejs/node:22.16.0-alpine AS production
 
 WORKDIR /app
 
