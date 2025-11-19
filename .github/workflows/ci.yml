@@ -345,8 +345,7 @@ jobs:
             ${{ secrets.SCW_STAGING_CONTAINER_ID }} \
             region=${{ env.SCW_DEFAULT_REGION }} \
             registry-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            redeploy=true \
-            -D
+            redeploy=true
 
   # Job: Deploy to Scaleway (production)
   deploy-production:
