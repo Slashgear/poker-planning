@@ -465,3 +465,53 @@ jobs:
 
           echo "❌ Deployment timed out after $((MAX_ATTEMPTS * 10)) seconds"
           exit 1
+
+  # Job: Create GitHub Release
+  create-release:
+    runs-on: ubuntu-latest
+    needs: [deploy-production]
+    if: startsWith(github.ref, 'refs/tags/')
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get previous tag
+        id: prev_tag
+        run: |
+          # Get the previous tag
+          PREV_TAG=$(git tag --sort=-version:refname | grep -v "^${{ github.ref_name }}$" | head -n 1)
+          echo "tag=$PREV_TAG" >> $GITHUB_OUTPUT
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          if [ -n "${{ steps.prev_tag.outputs.tag }}" ]; then
+            CHANGELOG=$(git log ${{ steps.prev_tag.outputs.tag }}..${{ github.ref_name }} --pretty=format:"- %s (%h)" --no-merges)
+          else
+            CHANGELOG=$(git log ${{ github.ref_name }} --pretty=format:"- %s (%h)" --no-merges)
+          fi
+
+          # Save to file to handle multiline
+          echo "$CHANGELOG" > changelog.txt
+
+      - name: Create Release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const changelog = fs.readFileSync('changelog.txt', 'utf8');
+
+            const releaseBody = `## What's Changed\n\n${changelog}\n\n## Deployment\n\n- ✅ Deployed to production\n- 🐳 Docker image: \`ghcr.io/${{ github.repository_owner }}/poker-planning:${{ github.ref_name }}\`\n- 🔗 Production URL: ${{ vars.SCW_PRODUCTION_URL }}`;
+
+            await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: '${{ github.ref_name }}',
+              name: 'Release ${{ github.ref_name }}',
+              body: releaseBody,
+              draft: false,
+              prerelease: false
+            });
