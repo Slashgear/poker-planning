@@ -13,7 +13,6 @@ env:
   NODE_VERSION: 22
   # GitHub Container Registry
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
   # Scaleway Serverless Container
   SCW_DEFAULT_REGION: fr-par
 
@@ -266,11 +265,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set lowercase repository owner
+        id: repo
+        run: echo "owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ steps.repo.outputs.owner }}/poker-planning
           tags: |
             type=sha,prefix=
             type=raw,value=latest
@@ -313,11 +316,15 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set lowercase repository owner
+        id: repo
+        run: echo "owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ steps.repo.outputs.owner }}/poker-planning
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
@@ -351,12 +358,17 @@ jobs:
         run: |
           curl -s https://raw.githubusercontent.com/scaleway/scaleway-cli/master/scripts/get.sh | sudo sh
 
+      - name: Set lowercase repository owner
+        id: repo
+        run: echo "owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - name: Deploy to staging
         run: |
           scw container container update \
             ${{ secrets.SCW_STAGING_CONTAINER_ID }} \
             region=${{ env.SCW_DEFAULT_REGION }} \
-            registry-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
+            registry-image=${{ env.REGISTRY }}/${{ steps.repo.outputs.owner }}/poker-planning:latest \
+            secret-environment-variables.REDIS_URL=${{ secrets.REDIS_URL }} \
             redeploy=true
 
       - name: Wait for deployment to complete
@@ -406,12 +418,17 @@ jobs:
         run: |
           curl -s https://raw.githubusercontent.com/scaleway/scaleway-cli/master/scripts/get.sh | sudo sh
 
+      - name: Set lowercase repository owner
+        id: repo
+        run: echo "owner=$(echo ${{ github.repository_owner }} | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+
       - name: Deploy to production
         run: |
           scw container container update \
             ${{ secrets.SCW_PRODUCTION_CONTAINER_ID }} \
             region=${{ env.SCW_DEFAULT_REGION }} \
-            registry-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} \
+            registry-image=${{ env.REGISTRY }}/${{ steps.repo.outputs.owner }}/poker-planning:${{ github.ref_name }} \
+            secret-environment-variables.REDIS_URL=${{ secrets.REDIS_URL }} \
             redeploy=true
 
       - name: Wait for deployment to complete
