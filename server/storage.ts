@@ -1,4 +1,4 @@
-import { getRedisClient } from './redis'
+import { getRedisClient } from './redis.js'
 import type { Redis } from 'ioredis'
 
 // Types

@@ -5,7 +5,7 @@ import { serveStatic } from '@hono/node-server/serve-static'
 import { serve } from '@hono/node-server'
 import { existsSync } from 'fs'
 import { getCookie, setCookie } from 'hono/cookie'
-import { RoomStorage, type Room, type RoomState } from './storage'
+import { RoomStorage, type Room, type RoomState } from './storage.js'
 
 // Constants
 const SESSION_DURATION = 2 * 60 * 60 * 1000 // 2 hours

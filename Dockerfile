@@ -19,7 +19,7 @@ COPY . .
 RUN pnpm run build
 
 # Build the server TypeScript to JavaScript
-RUN pnpm exec tsc server/index.ts --outDir server-dist --module ESNext --moduleResolution bundler --target ES2022 --esModuleInterop --skipLibCheck
+RUN pnpm exec tsc server/*.ts --outDir server-dist --module ESNext --moduleResolution bundler --target ES2022 --esModuleInterop --skipLibCheck
 
 # Production stage - Node.js server serving both API and static files
 FROM node:22.16.0-alpine AS production

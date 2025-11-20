@@ -98,31 +98,46 @@ cp .env.example .env
 # Edit .env and set your REDIS_URL
 ```
 
-### Redis Setup
+### Running with Docker Compose
 
-The application requires a Redis instance for storing room data across multiple container instances.
-
-**Option 1: Docker Compose (Recommended for development)**
+**Full stack (Redis + Application) - Production-like environment:**
 ```bash
-# Start Redis
+# Build and start everything
 docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop everything
+docker-compose down
+
+# Application available at http://localhost:3001
+```
+
+**Redis only (for local development with hot-reload):**
+```bash
+# Start only Redis
+docker-compose up -d redis
 
 # Stop Redis
 docker-compose down
 
-# View logs
-docker-compose logs -f redis
-
 # Set in .env:
 REDIS_URL=redis://localhost:6379
+
+# Then run the dev servers manually:
+# Terminal 1: pnpm run dev:server
+# Terminal 2: pnpm run dev
 ```
 
-**Option 2: Standalone Docker**
+### Alternative Redis Setup Methods
+
+**Standalone Docker:**
 ```bash
 docker run -d --name poker-redis -p 6379:6379 redis:alpine
 ```
 
-**Option 3: Local Redis installation**
+**Local Redis installation:**
 ```bash
 # macOS
 brew install redis
@@ -133,7 +148,7 @@ sudo apt-get install redis-server
 sudo systemctl start redis
 ```
 
-**Option 4: Scaleway Managed Redis (for production)**
+**Scaleway Managed Redis (for production):**
 1. Create a Managed Database for Redis instance in Scaleway
 2. Configure Private Network if needed
 3. Get the connection URL from Scaleway console
