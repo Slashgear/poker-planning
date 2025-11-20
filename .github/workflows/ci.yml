@@ -347,10 +347,34 @@ jobs:
             registry-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
             redeploy=true
 
-          # Wait for deployment to complete
-          scw container container wait \
-            ${{ secrets.SCW_STAGING_CONTAINER_ID }} \
-            region=${{ env.SCW_DEFAULT_REGION }}
+      - name: Wait for deployment to complete
+        run: |
+          echo "Waiting for deployment to complete..."
+          MAX_ATTEMPTS=60
+          ATTEMPT=0
+
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            STATUS=$(scw container container get \
+              ${{ secrets.SCW_STAGING_CONTAINER_ID }} \
+              region=${{ env.SCW_DEFAULT_REGION }} \
+              -o json | jq -r '.status')
+
+            echo "Attempt $((ATTEMPT + 1))/$MAX_ATTEMPTS - Current status: $STATUS"
+
+            if [ "$STATUS" = "ready" ]; then
+              echo "✅ Deployment successful!"
+              exit 0
+            elif [ "$STATUS" = "error" ]; then
+              echo "❌ Deployment failed with error status"
+              exit 1
+            fi
+
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep 10
+          done
+
+          echo "❌ Deployment timed out after $((MAX_ATTEMPTS * 10)) seconds"
+          exit 1
 
   # Job: Deploy to Scaleway (production)
   deploy-production:
@@ -378,7 +402,31 @@ jobs:
             registry-image=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref_name }} \
             redeploy=true
 
-          # Wait for deployment to complete
-          scw container container wait \
-            ${{ secrets.SCW_PRODUCTION_CONTAINER_ID }} \
-            region=${{ env.SCW_DEFAULT_REGION }}
+      - name: Wait for deployment to complete
+        run: |
+          echo "Waiting for deployment to complete..."
+          MAX_ATTEMPTS=60
+          ATTEMPT=0
+
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            STATUS=$(scw container container get \
+              ${{ secrets.SCW_PRODUCTION_CONTAINER_ID }} \
+              region=${{ env.SCW_DEFAULT_REGION }} \
+              -o json | jq -r '.status')
+
+            echo "Attempt $((ATTEMPT + 1))/$MAX_ATTEMPTS - Current status: $STATUS"
+
+            if [ "$STATUS" = "ready" ]; then
+              echo "✅ Deployment successful!"
+              exit 0
+            elif [ "$STATUS" = "error" ]; then
+              echo "❌ Deployment failed with error status"
+              exit 1
+            fi
+
+            ATTEMPT=$((ATTEMPT + 1))
+            sleep 10
+          done
+
+          echo "❌ Deployment timed out after $((MAX_ATTEMPTS * 10)) seconds"
+          exit 1
