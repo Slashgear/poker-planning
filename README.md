@@ -242,56 +242,44 @@ poker-planning/
 - `POST /api/rooms/:code/reset` - Reset the session
 - `DELETE /api/rooms/:code/members/:id` - Remove a member
 
-## Architecture
+## Infrastructure
 
 ```mermaid
 graph TB
-    subgraph "Client Layer"
-        Browser[Web Browser]
-    end
-
-    subgraph "Scaleway Infrastructure"
+    subgraph "Scaleway fr-par"
         subgraph "GitHub Container Registry"
-            GHCR[ghcr.io/slashgear/poker-planning]
+            GHCR["ghcr.io/slashgear/poker-planning<br/>Docker Images"]
         end
 
         subgraph "Private Network VPC"
-            subgraph "Serverless Containers"
-                Container1[Container Instance 1<br/>Hono API + Static Files]
-                Container2[Container Instance 2<br/>Hono API + Static Files]
-                ContainerN[Container Instance N<br/>Hono API + Static Files]
-            end
+            Redis[("Redis Managed Database<br/>rediss://10.x.x.x:6379<br/>TLS Enabled")]
 
-            Redis[(Redis<br/>Managed Database<br/>TLS Enabled)]
+            subgraph "Serverless Containers"
+                Staging["Staging Container<br/>Image: latest<br/>Auto-deploy on push to main"]
+                Prod["Production Container<br/>Image: v2.x.x<br/>Deploy on git tags"]
+            end
+        end
+
+        subgraph "CI/CD"
+            GHA["GitHub Actions<br/>Build • Test • Deploy"]
         end
     end
 
-    subgraph "CI/CD Pipeline"
-        GitHub[GitHub Actions]
-        GitHub -->|Build & Push| GHCR
-        GitHub -->|Deploy Staging| Container1
-        GitHub -->|Deploy Production v2.x.x| Container2
-    end
+    GHA -->|1. Build & Push| GHCR
+    GHA -->|2. Deploy| Staging
+    GHA -->|2. Deploy| Prod
 
-    Browser -->|HTTPS| Container1
-    Browser -->|HTTPS| Container2
-    Browser -->|SSE Connection| Container1
-    Browser -->|SSE Connection| Container2
+    GHCR -.->|Pull Image| Staging
+    GHCR -.->|Pull Image| Prod
 
-    Container1 -->|rediss://| Redis
-    Container2 -->|rediss://| Redis
-    ContainerN -->|rediss://| Redis
+    Staging -->|rediss://| Redis
+    Prod -->|rediss://| Redis
 
-    Redis -.->|Room Data<br/>TTL: 2h| Redis
-    Container1 -.->|SSE Broadcast| Browser
-    Container2 -.->|SSE Broadcast| Browser
-
-    style Redis fill:#ff6b6b
-    style Container1 fill:#4ecdc4
-    style Container2 fill:#4ecdc4
-    style ContainerN fill:#4ecdc4
-    style Browser fill:#95e1d3
-    style GHCR fill:#f38181
+    style Redis fill:#dc3545
+    style Staging fill:#17a2b8
+    style Prod fill:#28a745
+    style GHCR fill:#6c757d
+    style GHA fill:#ffc107
 ```
 
 ### Storage & Scalability
