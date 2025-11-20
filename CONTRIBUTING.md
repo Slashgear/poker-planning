@@ -49,9 +49,23 @@ pnpm install
 
 # Install Playwright
 pnpm exec playwright install chromium
+
+# Setup Redis (required)
+# Option 1: Using Docker
+docker run -d --name poker-redis -p 6379:6379 redis:alpine
+
+# Option 2: Install Redis locally (macOS)
+brew install redis
+brew services start redis
+
+# Configure environment
+cp .env.example .env
+# Edit .env and set REDIS_URL (default: redis://localhost:6379)
 ```
 
 ### Running
+
+**Prerequisites:** Make sure Redis is running
 
 ```bash
 # Terminal 1 - SSE server
@@ -59,6 +73,18 @@ pnpm run dev:server
 
 # Terminal 2 - Frontend
 pnpm run dev
+```
+
+### Environment Variables
+
+Create a `.env` file at the root of the project:
+
+```bash
+# Required: Redis connection URL
+REDIS_URL=redis://localhost:6379
+
+# Optional: Server port (default: 3001)
+PORT=3001
 ```
 
 ### Tests
@@ -195,6 +221,9 @@ test('new scenario', async ({ browser }) => {
 
 ```
 server/          # Hono backend + SSE
+  index.ts       # API endpoints and SSE
+  storage.ts     # Redis storage layer
+  redis.ts       # Redis client wrapper
 src/
   components/    # React UI components
   hooks/         # Custom React hooks
@@ -208,8 +237,9 @@ tests/
 ### Patterns
 
 **State Management:**
-- Local state with `useState` for UI
-- SSE for shared state between users
+- Redis for persistent room storage (server-side)
+- Local state with `useState` for UI (client-side)
+- SSE for real-time synchronization between users
 - No Redux/Zustand for now
 
 **API Communication:**
@@ -217,10 +247,16 @@ tests/
 - Fetch POST to send actions (write)
 - No polling
 
+**Storage:**
+- Redis for all room data
+- 2-hour TTL on rooms (auto-cleanup)
+- SSE client tracking per container instance (in-memory Map)
+
 **Error Handling:**
 - Try/catch in API calls
 - Console.error for debugging
 - User messages for critical errors
+- Redis connection retry logic
 
 ## PR Checklist
 
@@ -228,6 +264,8 @@ tests/
 - [ ] All tests pass (`pnpm test`)
 - [ ] Linting passes (`pnpm lint`)
 - [ ] Code follows project conventions
+- [ ] Redis is running for local tests
+- [ ] Environment variables are documented if added
 - [ ] New files have appropriate imports/exports
 - [ ] Documentation is updated if necessary
 - [ ] Commit messages follow conventions
