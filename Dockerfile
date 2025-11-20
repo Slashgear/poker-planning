@@ -41,6 +41,9 @@ COPY --from=builder /app/server-dist ./server
 # Copy built frontend from builder stage
 COPY --from=builder /app/dist ./dist
 
+# Set production environment
+ENV NODE_ENV=production
+
 # Expose port (default 3001, can be overridden with PORT env var)
 EXPOSE 3001
 

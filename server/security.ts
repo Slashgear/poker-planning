@@ -69,4 +69,23 @@ export async function securityHeaders(c: Context, next: Next) {
   c.header('X-XSS-Protection', '1; mode=block')
   c.header('Referrer-Policy', 'strict-origin-when-cross-origin')
   c.header('Permissions-Policy', 'geolocation=(), microphone=(), camera=()')
+
+  // Content Security Policy (production only)
+  const isProduction = process.env.NODE_ENV === 'production'
+  if (isProduction) {
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self'",
+      "style-src 'self' 'unsafe-inline'", // Tailwind needs unsafe-inline
+      "img-src 'self' data: https:",
+      "font-src 'self'",
+      "connect-src 'self'",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "upgrade-insecure-requests"
+    ].join('; ')
+
+    c.header('Content-Security-Policy', csp)
+  }
 }
