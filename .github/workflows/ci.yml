@@ -400,6 +400,9 @@ jobs:
             registry-image=${{ env.REGISTRY }}/${{ steps.repo.outputs.owner }}/poker-planning:latest \
             secret-environment-variables.0.key=REDIS_URL \
             secret-environment-variables.0.value=${{ secrets.REDIS_URL }} \
+            health-check.http.path=/api/health \
+            health-check.failure-threshold=3 \
+            health-check.interval=30s \
             redeploy=true
 
       - name: Wait for deployment to complete
@@ -465,6 +468,9 @@ jobs:
             registry-image=${{ env.REGISTRY }}/${{ steps.repo.outputs.owner }}/poker-planning:${{ steps.version.outputs.tag }} \
             secret-environment-variables.0.key=REDIS_URL \
             secret-environment-variables.0.value=${{ secrets.REDIS_URL }} \
+            health-check.http.path=/api/health \
+            health-check.failure-threshold=3 \
+            health-check.interval=30s \
             redeploy=true
 
       - name: Wait for deployment to complete

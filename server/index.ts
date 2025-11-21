@@ -97,6 +97,26 @@ app.use(
 // API Routes
 const api = new Hono();
 
+// Health check endpoint (no rate limiting)
+api.get("/health", async (c) => {
+  try {
+    // Check Redis connection
+    const redis = (storage as any).redis;
+    await redis.ping();
+
+    return c.json({ status: "ok", redis: "connected" });
+  } catch (error) {
+    return c.json(
+      {
+        status: "error",
+        redis: "disconnected",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      503,
+    );
+  }
+});
+
 // Rate limiting for API routes
 api.use("/*", rateLimiter);
 
