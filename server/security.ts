@@ -86,6 +86,7 @@ export async function securityHeaders(c: Context, next: Next) {
       "img-src 'self' data: https:",
       "font-src 'self'",
       "connect-src 'self'",
+      "worker-src 'self' blob:", // Required for canvas-confetti animation
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
