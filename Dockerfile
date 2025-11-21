@@ -18,6 +18,14 @@ COPY . .
 # Build the frontend application
 RUN pnpm run build
 
+# Install compression tools and precompress static assets
+RUN apk add --no-cache brotli zstd zopfli && \
+    find dist -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -name "*.svg" -o -name "*.json" \) | while read file; do \
+      brotli -k -q 11 "$file"; \
+      zstd -k -q --ultra -22 "$file"; \
+      zopfli "$file"; \
+    done
+
 # Build the server TypeScript to JavaScript
 RUN pnpm exec tsc server/*.ts --outDir server-dist --module ESNext --moduleResolution bundler --target ES2022 --esModuleInterop --skipLibCheck
 

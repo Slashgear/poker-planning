@@ -234,17 +234,6 @@ jobs:
       - name: Build
         run: pnpm run build
 
-      - name: Install compression tools
-        run: sudo apt-get update && sudo apt-get install -y brotli zstd zopfli
-
-      - name: Precompress static assets
-        run: |
-          find dist -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -name "*.svg" -o -name "*.json" \) | while read file; do
-            brotli -k -q 11 "$file"
-            zstd -k -q --ultra -22 "$file"
-            zopfli "$file"
-          done
-
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
