@@ -22,4 +22,19 @@ export default defineConfig({
       use: { ...devices["Desktop Chrome"] },
     },
   ],
+
+  webServer: [
+    {
+      command: "REDIS_URL=redis://localhost:6379 pnpm run dev:server",
+      url: "http://localhost:3001/health",
+      timeout: 120000,
+      reuseExistingServer: !process.env.CI,
+    },
+    {
+      command: "pnpm run dev",
+      url: "http://localhost:5173",
+      timeout: 120000,
+      reuseExistingServer: !process.env.CI,
+    },
+  ],
 });

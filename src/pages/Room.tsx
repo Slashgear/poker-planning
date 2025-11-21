@@ -170,6 +170,15 @@ export default function Room() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // Keyboard shortcuts - must be called before any early returns
+  useKeyboardShortcuts({
+    onVote: handleVote,
+    onReveal: reveal,
+    onReset: reset,
+    canReveal: votedCount > 0,
+    showResults: roomState?.showResults || false,
+  });
+
   // Error state
   if (error && !roomState) {
     return (
@@ -237,15 +246,6 @@ export default function Room() {
     numericVotes.length > 0
       ? numericVotes.reduce((a, b) => a + b, 0) / numericVotes.length
       : 0;
-
-  // Keyboard shortcuts
-  useKeyboardShortcuts({
-    onVote: handleVote,
-    onReveal: reveal,
-    onReset: reset,
-    canReveal: votedCount > 0,
-    showResults: showResults,
-  });
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
