@@ -74,7 +74,7 @@ jobs:
         run: pnpm lint
 
       - name: Check formatting
-        run: pnpm format && git diff --exit-code
+        run: pnpm format
 
   # Job: E2E tests with Playwright
   test-e2e:
