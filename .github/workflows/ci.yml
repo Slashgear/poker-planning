@@ -207,11 +207,6 @@ jobs:
           # Wait for server to be ready
           timeout 30 bash -c 'until curl -f http://localhost:3001/api/health; do sleep 1; done'
 
-      - name: Run smoke test
-        run: pnpm run test:load:smoke
-        env:
-          API_URL: http://localhost:3001
-
       - name: Run basic load test
         run: pnpm run test:load:basic
         env:

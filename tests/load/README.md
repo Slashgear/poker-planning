@@ -8,25 +8,9 @@ Load testing helps ensure the application can handle expected traffic and identi
 
 ## Test Scenarios
 
-### 1. Smoke Test (`smoke-test.js`)
+> **Note**: Functional validation (ensuring endpoints work correctly) is handled by Playwright e2e tests. Load tests focus on performance under various load conditions.
 
-**Purpose**: Quick validation that the system works with minimal load.
-
-**Configuration**:
-- 1 virtual user
-- 1 minute duration
-- Validates all API endpoints work correctly
-
-**When to run**:
-- Before running other load tests
-- After deployment to verify basic functionality
-- In CI/CD pipeline on every PR
-
-```bash
-pnpm run test:load:smoke
-```
-
-### 2. Basic Workflow (`basic-workflow.js`)
+### 1. Basic Workflow (`basic-workflow.js`)
 
 **Purpose**: Simulates realistic poker planning sessions with gradual load increase.
 
@@ -52,7 +36,7 @@ pnpm run test:load:smoke
 pnpm run test:load:basic
 ```
 
-### 3. Spike Test (`spike-test.js`)
+### 2. Spike Test (`spike-test.js`)
 
 **Purpose**: Tests system behavior under sudden traffic surges.
 
@@ -70,7 +54,7 @@ pnpm run test:load:basic
 pnpm run test:load:spike
 ```
 
-### 4. Stress Test (`stress-test.js`)
+### 3. Stress Test (`stress-test.js`)
 
 **Purpose**: Find the breaking point of the application.
 
@@ -127,9 +111,6 @@ REDIS_URL=redis://localhost:6379 pnpm run dev:server
 
 3. In another terminal, run the tests:
 ```bash
-# Run smoke test first
-pnpm run test:load:smoke
-
 # Run basic load test
 pnpm run test:load:basic
 
@@ -146,7 +127,7 @@ You can customize test parameters using environment variables:
 
 ```bash
 # Test against different URL
-API_URL=https://poker-staging.slashgear.dev pnpm run test:load:smoke
+API_URL=https://poker-staging.slashgear.dev pnpm run test:load:basic
 
 # Run k6 with custom options
 k6 run --vus 50 --duration 2m tests/load/scenarios/basic-workflow.js
@@ -159,16 +140,17 @@ k6 run --out json=results.json tests/load/scenarios/basic-workflow.js
 
 Load tests run automatically in GitHub Actions:
 
-- **On Pull Requests**: Smoke test + Basic workflow test
-- **On Main Branch**: All tests including spike test
+- **On Pull Requests**: Basic workflow test
+- **On Main Branch**: Basic workflow + Spike test
 
 The CI job:
 1. Starts Redis service
 2. Starts the application server
-3. Runs smoke test (validation)
-4. Runs basic load test
-5. Runs spike test (main branch only)
-6. Uploads results as artifacts
+3. Runs basic load test
+4. Runs spike test (main branch only)
+5. Uploads results as artifacts
+
+> **Note**: Functional validation is handled by Playwright e2e tests which run separately.
 
 ## Understanding Results
 
@@ -249,8 +231,8 @@ If tests reveal performance issues:
 
 ## Best Practices
 
-1. **Always run smoke test first** to validate basic functionality
-2. **Run tests in isolation** to avoid interference
+1. **Run e2e tests first** to validate functionality (use `pnpm test`)
+2. **Run load tests in isolation** to avoid interference
 3. **Monitor server resources** during tests (CPU, memory, connections)
 4. **Baseline before changes** to measure impact
 5. **Test realistic scenarios** that match production usage
