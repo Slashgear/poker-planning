@@ -257,7 +257,14 @@ poker-planning/
 └── playwright.config.ts
 ```
 
-## API Endpoints
+## API Documentation
+
+The API is fully documented using OpenAPI 3.0 specification.
+
+- **Interactive API Docs (Swagger UI)**: [https://poker.slashgear.dev/api/docs](https://poker.slashgear.dev/api/docs)
+- **OpenAPI JSON**: [https://poker.slashgear.dev/api/openapi.json](https://poker.slashgear.dev/api/openapi.json)
+
+### Quick Reference
 
 - `POST /api/rooms` - Create a new room
 - `POST /api/rooms/:code/join` - Join a room
@@ -267,6 +274,8 @@ poker-planning/
 - `POST /api/rooms/:code/reveal` - Reveal all votes
 - `POST /api/rooms/:code/reset` - Reset the session
 - `DELETE /api/rooms/:code/members/:id` - Remove a member
+
+For detailed request/response schemas, authentication, and examples, see the [interactive API documentation](https://poker.slashgear.dev/api/docs).
 
 ## Infrastructure
 
