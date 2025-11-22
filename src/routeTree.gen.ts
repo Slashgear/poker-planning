@@ -5,9 +5,12 @@ import {
 } from "@tanstack/react-router";
 import Home from "./pages/Home";
 import Room from "./pages/Room";
+import NotFound from "./pages/NotFound";
 
 // Root route
-const rootRoute = createRootRoute();
+const rootRoute = createRootRoute({
+  notFoundComponent: NotFound,
+});
 
 // Home route
 const indexRoute = createRoute({
@@ -27,7 +30,10 @@ const roomRoute = createRoute({
 const routeTree = rootRoute.addChildren([indexRoute, roomRoute]);
 
 // Router
-export const router = createRouter({ routeTree });
+export const router = createRouter({
+  routeTree,
+  defaultNotFoundComponent: NotFound,
+});
 
 // Type declaration
 declare module "@tanstack/react-router" {

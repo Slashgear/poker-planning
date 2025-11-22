@@ -117,15 +117,41 @@ if (existsSync(distPath)) {
   });
   app.use("/*", serveStatic({ root: distPath, precompressed: true }));
 
-  // SPA fallback - no cache for index.html
-  app.get("*", async (c, next) => {
-    await next();
+  // SPA fallback - serve index.html with appropriate status code
+  app.get("*", async (c) => {
+    const path = c.req.path;
+
+    // Known frontend routes (exact matches or patterns)
+    const validRoutes = [
+      "/",
+      /^\/room\/[A-Z0-9]{6}$/i, // Room codes are 6 chars
+    ];
+
+    // Check if path matches any valid route
+    const isValidRoute = validRoutes.some((route) => {
+      if (typeof route === "string") {
+        return path === route;
+      }
+      return route.test(path);
+    });
+
+    // Set cache header
     c.header("Cache-Control", "no-store");
+
+    // Serve index.html but with 404 status for invalid routes
+    const response = await serveStatic({
+      root: distPath,
+      path: "index.html",
+      precompressed: true,
+    })(c);
+
+    // If route is invalid, return with 404 status
+    if (!isValidRoute && response) {
+      return c.html(await response.text(), 404);
+    }
+
+    return response;
   });
-  app.get(
-    "*",
-    serveStatic({ root: distPath, path: "index.html", precompressed: true }),
-  );
   console.log("📦 Serving static files from dist/");
 }
 
