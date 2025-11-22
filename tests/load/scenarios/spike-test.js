@@ -50,6 +50,14 @@ export default function () {
 
     check(joinRes, {
       "joined room": (r) => r.status === 200,
+      "has member id": (r) => {
+        try {
+          const body = JSON.parse(r.body);
+          return body.success && body.memberId;
+        } catch {
+          return false;
+        }
+      },
     });
   }
 

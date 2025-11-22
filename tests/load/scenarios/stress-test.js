@@ -48,7 +48,7 @@ export default function () {
     );
 
     if (check(joinRes, { joined: (r) => r.status === 200 })) {
-      const sessionCookie = joinRes.cookies.session?.[0]?.value;
+      const sessionCookie = joinRes.cookies.session_id?.[0]?.value;
 
       // Vote
       http.post(
@@ -57,7 +57,7 @@ export default function () {
         {
           headers: {
             "Content-Type": "application/json",
-            Cookie: `session=${sessionCookie}`,
+            Cookie: `session_id=${sessionCookie}`,
           },
         },
       );

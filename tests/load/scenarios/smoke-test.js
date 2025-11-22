@@ -47,10 +47,13 @@ export default function () {
 
     check(joinRes, {
       "member joined": (r) => r.status === 200,
-      "has member id": (r) => JSON.parse(r.body).member.id,
+      "has member id": (r) => {
+        const body = JSON.parse(r.body);
+        return body.success && body.memberId;
+      },
     });
 
-    const sessionCookie = joinRes.cookies.session?.[0]?.value;
+    const sessionCookie = joinRes.cookies.session_id?.[0]?.value;
     sleep(1);
 
     // 3. Get room state
@@ -72,7 +75,7 @@ export default function () {
       {
         headers: {
           "Content-Type": "application/json",
-          Cookie: `session=${sessionCookie}`,
+          Cookie: `session_id=${sessionCookie}`,
         },
       },
     );
@@ -90,7 +93,7 @@ export default function () {
       {
         headers: {
           "Content-Type": "application/json",
-          Cookie: `session=${sessionCookie}`,
+          Cookie: `session_id=${sessionCookie}`,
         },
       },
     );
@@ -109,7 +112,7 @@ export default function () {
       {
         headers: {
           "Content-Type": "application/json",
-          Cookie: `session=${sessionCookie}`,
+          Cookie: `session_id=${sessionCookie}`,
         },
       },
     );
@@ -132,7 +135,7 @@ export default function () {
       {
         headers: {
           "Content-Type": "application/json",
-          Cookie: `session=${sessionCookie}`,
+          Cookie: `session_id=${sessionCookie}`,
         },
       },
     );

@@ -132,10 +132,10 @@ export default function () {
 
   const joinSuccess = check(joinRes, {
     "joined successfully": (r) => r.status === 200,
-    "member has id": (r) => {
+    "has member id": (r) => {
       try {
         const body = JSON.parse(r.body);
-        return body.member && body.member.id;
+        return body.success && body.memberId;
       } catch {
         return false;
       }
@@ -151,7 +151,7 @@ export default function () {
   errorRate.add(0);
   joinTime.add(joinRes.timings.duration);
 
-  const sessionCookie = joinRes.cookies.session?.[0]?.value;
+  const sessionCookie = joinRes.cookies.session_id?.[0]?.value;
 
   sleep(1);
 
@@ -174,7 +174,7 @@ export default function () {
     {
       headers: {
         "Content-Type": "application/json",
-        Cookie: `session=${sessionCookie}`,
+        Cookie: `session_id=${sessionCookie}`,
       },
       tags: { name: "Vote" },
     },
