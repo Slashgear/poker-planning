@@ -267,6 +267,10 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:latest
+            env.BUILDKIT_COLORS=run=green:warning=yellow:error=red:cancel=255,165,0
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -298,6 +302,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: false
 
   # Job: Build and push Docker image for tags
   docker-build-tag:
@@ -318,6 +323,10 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:latest
+            env.BUILDKIT_COLORS=run=green:warning=yellow:error=red:cancel=255,165,0
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
@@ -349,6 +358,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          provenance: false
 
   # Job: Deploy to Scaleway (staging)
   deploy-staging:
