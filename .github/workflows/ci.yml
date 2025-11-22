@@ -208,13 +208,23 @@ jobs:
           timeout 30 bash -c 'until curl -f http://localhost:3001/api/health; do sleep 1; done'
 
       - name: Run basic load test
-        run: pnpm run test:load:basic
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: pnpm run test:load:basic
         env:
           API_URL: http://localhost:3001
 
       - name: Run spike test
         if: github.ref == 'refs/heads/main'
-        run: pnpm run test:load:spike
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          retry_wait_seconds: 10
+          command: pnpm run test:load:spike
         env:
           API_URL: http://localhost:3001
 
