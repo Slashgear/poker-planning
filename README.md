@@ -67,6 +67,8 @@ Celebrate when everyone agrees!
 
 ### Tests
 - **Playwright** for end-to-end tests
+- **Vitest** for unit tests
+- **k6** for load and performance testing
 
 ### Linting & Formatting
 - **oxlint** for fast JavaScript/TypeScript linting
@@ -211,8 +213,10 @@ Then open:
 
 ## Tests
 
+### End-to-End Tests (Playwright)
+
 ```bash
-# Run all tests
+# Run all E2E tests
 pnpm test
 
 # Interactive mode with UI
@@ -224,6 +228,41 @@ pnpm test:headed
 # View HTML report
 pnpm test:report
 ```
+
+### Unit Tests (Vitest)
+
+```bash
+# Run unit tests
+pnpm test:unit
+```
+
+### Load Tests (k6)
+
+Load testing ensures the application can handle expected traffic and identifies performance bottlenecks.
+
+**Prerequisites**: Install [k6](https://k6.io/docs/get-started/installation/)
+
+```bash
+# Quick validation (1 user, 1 minute)
+pnpm run test:load:smoke
+
+# Realistic load test (10-20 users)
+pnpm run test:load:basic
+
+# Spike test (sudden surge to 100 users)
+pnpm run test:load:spike
+
+# Stress test (gradual ramp to 200 users)
+pnpm run test:load:stress
+```
+
+**Performance Thresholds**:
+- Error rate: < 1% (normal load)
+- 95% of requests: < 500ms
+- Room operations: < 300ms
+- Vote operations: < 200ms
+
+See [tests/load/README.md](tests/load/README.md) for detailed documentation.
 
 ## Linting & Formatting
 
@@ -241,8 +280,8 @@ pnpm format
 poker-planning/
 ├── server/              # Hono API server
 │   ├── index.ts        # API endpoints and SSE handling
-│   ├── storage.ts      # Redis storage layer for rooms
-│   └── redis.ts        # Redis client wrapper
+│   ├── storage.ts      # Redis/Valkey storage layer for rooms
+│   └── redis.ts        # Redis/Valkey client wrapper
 ├── src/
 │   ├── pages/          # Page components
 │   │   ├── Home.tsx    # Homepage with room creation
@@ -253,7 +292,11 @@ poker-planning/
 │   ├── routeTree.gen.ts # TanStack Router configuration
 │   ├── main.tsx
 │   └── index.css
-├── tests/              # Playwright tests
+├── tests/
+│   ├── e2e/            # Playwright E2E tests
+│   └── load/           # k6 load tests
+│       ├── scenarios/  # Test scenarios
+│       └── README.md   # Load testing documentation
 └── playwright.config.ts
 ```
 

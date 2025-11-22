@@ -155,6 +155,91 @@ jobs:
             test-results/
           retention-days: 30
 
+  # Job: Load tests with k6
+  test-load:
+    runs-on: ubuntu-latest
+    needs: [install]
+    if: github.ref == 'refs/heads/main' || github.event_name == 'pull_request'
+    services:
+      redis:
+        image: redis:alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    env:
+      REDIS_URL: redis://localhost:6379
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Start application server
+        run: |
+          pnpm run dev:server &
+          echo $! > server.pid
+          # Wait for server to be ready
+          timeout 30 bash -c 'until curl -f http://localhost:3001/api/health; do sleep 1; done'
+
+      - name: Run smoke test
+        run: pnpm run test:load:smoke
+        env:
+          API_URL: http://localhost:3001
+
+      - name: Run basic load test
+        run: pnpm run test:load:basic
+        env:
+          API_URL: http://localhost:3001
+
+      - name: Run spike test
+        if: github.ref == 'refs/heads/main'
+        run: pnpm run test:load:spike
+        env:
+          API_URL: http://localhost:3001
+
+      - name: Stop application server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then
+            kill $(cat server.pid) || true
+            rm server.pid
+          fi
+
+      - name: Upload load test results
+        uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: load-test-results
+          path: |
+            tests/load/results/
+          retention-days: 30
+
   # Job: Security audit
   security-audit:
     runs-on: ubuntu-latest
