@@ -52,7 +52,7 @@ const BASE_URL = __ENV.API_URL || "http://localhost:3001";
 const FIBONACCI = [1, 2, 3, 5, 8, 13, 21, "?", "☕"];
 
 /**
- * Generate a random member name
+ * Generate a random member name with unique suffix
  */
 function randomName() {
   const names = [
@@ -73,7 +73,9 @@ function randomName() {
     "Olivia",
     "Paul",
   ];
-  return names[Math.floor(Math.random() * names.length)];
+  const baseName = names[Math.floor(Math.random() * names.length)];
+  const suffix = Math.floor(Math.random() * 10000);
+  return `${baseName}${suffix}`;
 }
 
 /**
