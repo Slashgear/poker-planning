@@ -28,9 +28,6 @@ RUN find dist -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -nam
       zopfli "$file"; \
     done
 
-# Build the server TypeScript to JavaScript
-RUN pnpm exec tsc server/*.ts --outDir server-dist --module ESNext --moduleResolution bundler --target ES2022 --esModuleInterop --skipLibCheck
-
 # Production stage - Node.js server serving both API and static files
 FROM node:22.16.0-alpine AS production
 
@@ -42,11 +39,11 @@ RUN corepack enable && corepack prepare pnpm@10.17.0 --activate
 # Copy package files
 COPY package.json pnpm-lock.yaml ./
 
-# Install production dependencies only
+# Install production dependencies (including tsx for running TypeScript)
 RUN pnpm install --frozen-lockfile --prod
 
-# Copy compiled server code
-COPY --from=builder /app/server-dist ./server
+# Copy server source code
+COPY --from=builder /app/server ./server
 
 # Copy built frontend from builder stage
 COPY --from=builder /app/dist ./dist
@@ -57,5 +54,5 @@ ENV NODE_ENV=production
 # Expose port (default 3001, can be overridden with PORT env var)
 EXPOSE 3001
 
-# Start the server
-CMD ["node", "server/index.js"]
+# Start the server with tsx (TypeScript execution)
+CMD ["pnpm", "exec", "tsx", "server/index.ts"]
