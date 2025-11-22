@@ -1,0 +1,8 @@
+# k6 output files
+results/
+*.json
+*.csv
+*.xml
+
+# k6 cloud results
+summary.json

@@ -16,6 +16,10 @@
     "test:ui": "playwright test --ui",
     "test:headed": "playwright test --headed",
     "test:report": "playwright show-report",
+    "test:load": "k6 run tests/load/scenarios/basic-workflow.js",
+    "test:load:basic": "k6 run tests/load/scenarios/basic-workflow.js",
+    "test:load:spike": "k6 run tests/load/scenarios/spike-test.js",
+    "test:load:stress": "k6 run tests/load/scenarios/stress-test.js",
     "screenshots": "tsx scripts/generate-screenshots.ts"
   },
   "keywords": [],
