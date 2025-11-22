@@ -99,7 +99,7 @@ export default function () {
       try {
         const body = JSON.parse(r.body);
         return body.code && body.code.length === 6;
-      } catch (_e) {
+      } catch {
         return false;
       }
     },
@@ -136,7 +136,7 @@ export default function () {
       try {
         const body = JSON.parse(r.body);
         return body.member && body.member.id;
-      } catch (_e) {
+      } catch {
         return false;
       }
     },
@@ -151,7 +151,6 @@ export default function () {
   errorRate.add(0);
   joinTime.add(joinRes.timings.duration);
 
-  const joinData = JSON.parse(joinRes.body);
   const sessionCookie = joinRes.cookies.session?.[0]?.value;
 
   sleep(1);
