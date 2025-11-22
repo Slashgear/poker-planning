@@ -62,8 +62,8 @@ Celebrate when everyone agrees!
 - **Hono** - Lightweight web framework
 - **Server-Sent Events** for real-time synchronization
 - **Node.js** with TypeScript
-- **Redis** - Distributed storage for horizontal scaling
-- **ioredis** - Redis client with connection pooling
+- **Redis/Valkey** - Distributed storage for horizontal scaling
+- **ioredis** - Redis/Valkey client with connection pooling
 
 ### Tests
 - **Playwright** for end-to-end tests
@@ -78,7 +78,7 @@ Celebrate when everyone agrees!
 
 - Node.js 22+
 - pnpm 10+
-- **Redis** (local or remote instance)
+- **Redis or Valkey** (local or remote instance)
 
 ### Installation
 
@@ -100,7 +100,7 @@ cp .env.example .env
 
 ### Running with Docker Compose
 
-**Full stack (Redis + Application) - Production-like environment:**
+**Full stack (Redis/Valkey + Application) - Production-like environment:**
 ```bash
 # Build and start everything
 docker-compose up -d
@@ -114,7 +114,7 @@ docker-compose down
 # Application available at http://localhost:3001
 ```
 
-**Redis only (for local development with hot-reload):**
+**Redis/Valkey only (for local development with hot-reload):**
 ```bash
 # Start only Redis
 docker-compose up -d redis
@@ -130,11 +130,33 @@ REDIS_URL=redis://localhost:6379
 # Terminal 2: pnpm run dev
 ```
 
-### Alternative Redis Setup Methods
+### Storage Backend Setup
 
-**Standalone Docker:**
+The application is compatible with both **Redis** and **Valkey** (a fully open-source fork of Redis maintained by the Linux Foundation).
+
+**Valkey with Docker (recommended for open-source stack):**
+```bash
+docker run -d --name poker-valkey -p 6379:6379 valkey/valkey:alpine
+```
+
+**Redis with Docker:**
 ```bash
 docker run -d --name poker-redis -p 6379:6379 redis:alpine
+```
+
+**Local Valkey installation:**
+```bash
+# macOS
+brew install valkey
+brew services start valkey
+
+# Linux (Ubuntu/Debian)
+# Add Valkey repository
+curl -fsSL https://packages.valkey.io/gpg | sudo gpg --dearmor -o /usr/share/keyrings/valkey-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/valkey-archive-keyring.gpg] https://packages.valkey.io/deb $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/valkey.list
+sudo apt-get update
+sudo apt-get install valkey
+sudo systemctl start valkey
 ```
 
 **Local Redis installation:**
@@ -148,13 +170,17 @@ sudo apt-get install redis-server
 sudo systemctl start redis
 ```
 
-**Scaleway Managed Redis (for production):**
-1. Create a Managed Database for Redis instance in Scaleway
-2. Configure Private Network if needed
-3. Get the connection URL from Scaleway console
-4. Set in your environment:
+**Managed services (for production):**
+
+Both Valkey and Redis are protocol-compatible, so you can use managed services:
+- **Scaleway Managed Database for Redis**
+- **AWS ElastiCache** (supports both Redis and Valkey)
+- **DigitalOcean Managed Redis**
+- Any Redis-compatible service
+
+Example configuration:
 ```bash
-REDIS_URL=redis://username:password@your-redis-instance.fr-par.scw.cloud:6379
+REDIS_URL=redis://username:password@your-instance.cloud:6379
 ```
 
 ### Development
@@ -283,10 +309,11 @@ graph TB
 ```
 
 ### Storage & Scalability
-- **Redis** for distributed session storage
+- **Redis/Valkey** for distributed session storage
   - Rooms stored with 2-hour TTL (auto-expiry)
   - Supports horizontal scaling across multiple container instances
   - Atomic operations for consistency
+  - Protocol-compatible: works with both Redis and Valkey
 - Session data persists across container restarts
 - Inactive member cleanup runs every minute
 
@@ -294,14 +321,14 @@ graph TB
 - Rooms are identified by 6-character codes (e.g., `ABC123`)
 - Members are tracked via session cookies (httpOnly, 2h expiry)
 - Inactive members are automatically removed after 5 minutes
-- Empty rooms are automatically cleaned up by Redis TTL
+- Empty rooms are automatically cleaned up by Redis/Valkey TTL
 
 ### Real-time Updates
 - Server-Sent Events broadcast room state to all connected clients
 - Automatic reconnection on connection loss
 - Keep-alive pings every 30 seconds
 - SSE clients tracked per container (roomClients Map)
-- Room state fetched from Redis on each broadcast
+- Room state fetched from Redis/Valkey on each broadcast
 
 ## Available Scripts
 
