@@ -161,7 +161,7 @@ export default function Room() {
         );
       } else {
         setAnnouncement(
-          `Votes revealed. ${votes.length} members voted. Average: ${(votes.filter((v): v is number => typeof v === "number").reduce((a, b) => a + b, 0) / votes.filter((v): v is number => typeof v === "number").length).toFixed(1)}`,
+          `Votes revealed. ${votes.length} members voted. The average is ${(votes.filter((v): v is number => typeof v === "number").reduce((a, b) => a + b, 0) / votes.filter((v): v is number => typeof v === "number").length).toFixed(1)}`,
         );
       }
     } else if (!roomState.showResults && previousShowResults.current) {
@@ -446,7 +446,6 @@ export default function Room() {
             <button
               onClick={reveal}
               disabled={showResults || votedCount === 0}
-              aria-label={`Reveal votes. ${votedCount} out of ${members.length} members have voted`}
               aria-disabled={showResults || votedCount === 0}
               className="bg-green-600 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white font-semibold py-2 px-6 rounded-lg transition-colors focus:outline-none focus:ring-4 focus:ring-green-400/50"
             >
