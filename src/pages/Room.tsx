@@ -587,7 +587,7 @@ export default function Room() {
             <span className="mx-2" aria-hidden="true">
               ·
             </span>
-            <span>v2.6.0</span>
+            <span>v2.6.1</span>
           </footer>
         </div>
       </main>
