@@ -19,4 +19,23 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    // Optimize bundle splitting
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separate vendor chunks for better caching
+          "react-vendor": ["react", "react-dom"],
+          "router-vendor": ["@tanstack/react-router"],
+          "query-vendor": ["@tanstack/react-query"],
+        },
+      },
+    },
+    // Use esbuild for fast minification (drop_console handled via plugin)
+    minify: "esbuild",
+    // Improve chunk size warnings
+    chunkSizeWarningLimit: 500,
+    // Enable source maps for production debugging (optional)
+    sourcemap: false,
+  },
 });

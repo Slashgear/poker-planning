@@ -1,8 +1,10 @@
-import confetti from "canvas-confetti";
 import { useCallback } from "react";
 
 export function useConfetti() {
-  const fireConfetti = useCallback(() => {
+  const fireConfetti = useCallback(async () => {
+    // Lazy load canvas-confetti only when needed (consensus reached)
+    const confetti = (await import("canvas-confetti")).default;
+
     // First burst - left side
     confetti({
       particleCount: 100,

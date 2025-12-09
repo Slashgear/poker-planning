@@ -2,12 +2,11 @@ import { describe, it, expect, vi } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { useConfetti } from "./useConfetti";
 
-// Mock canvas-confetti
+// Mock canvas-confetti with dynamic import support
+const mockConfetti = vi.fn();
 vi.mock("canvas-confetti", () => ({
-  default: vi.fn(),
+  default: mockConfetti,
 }));
-
-import confetti from "canvas-confetti";
 
 describe("useConfetti", () => {
   it("returns fireConfetti function", () => {
@@ -17,15 +16,14 @@ describe("useConfetti", () => {
     expect(typeof result.current.fireConfetti).toBe("function");
   });
 
-  it("fires multiple confetti bursts when called", () => {
+  it("fires multiple confetti bursts when called", async () => {
     vi.useFakeTimers();
-    const mockConfetti = vi.mocked(confetti);
     mockConfetti.mockClear();
 
     const { result } = renderHook(() => useConfetti());
-    result.current.fireConfetti();
+    await result.current.fireConfetti();
 
-    // First two bursts are immediate
+    // First two bursts are immediate (after import)
     expect(mockConfetti).toHaveBeenCalledTimes(2);
 
     // Left burst
@@ -66,13 +64,12 @@ describe("useConfetti", () => {
     vi.useRealTimers();
   });
 
-  it("uses purple/pink theme colors", () => {
+  it("uses purple/pink theme colors", async () => {
     vi.useFakeTimers();
-    const mockConfetti = vi.mocked(confetti);
     mockConfetti.mockClear();
 
     const { result } = renderHook(() => useConfetti());
-    result.current.fireConfetti();
+    await result.current.fireConfetti();
 
     // Check that all calls include purple/pink colors
     mockConfetti.mock.calls.forEach((call) => {

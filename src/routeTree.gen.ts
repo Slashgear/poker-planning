@@ -3,9 +3,12 @@ import {
   createRoute,
   createRouter,
 } from "@tanstack/react-router";
-import Home from "./pages/Home";
-import Room from "./pages/Room";
-import NotFound from "./pages/NotFound";
+import { lazy } from "react";
+
+// Lazy load pages for code splitting
+const Home = lazy(() => import("./pages/Home"));
+const Room = lazy(() => import("./pages/Room"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Root route
 const rootRoute = createRootRoute({
