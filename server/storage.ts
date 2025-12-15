@@ -77,12 +77,21 @@ export class RoomStorage {
       serializeRoom(room),
     );
 
+    console.log(
+      `[ROOM_CREATED] Room ${code} created with TTL ${ROOM_TTL}s (${ROOM_TTL / 3600}h)`,
+    );
+
     return room;
   }
 
   async getRoom(code: string): Promise<Room | null> {
     const data = await this.redis.get(this.getRoomKey(code));
-    if (!data) return null;
+    if (!data) {
+      console.log(
+        `[ROOM_NOT_FOUND] Room ${code} not found in Redis - may have expired or been deleted`,
+      );
+      return null;
+    }
     return deserializeRoom(data);
   }
 
@@ -92,6 +101,19 @@ export class RoomStorage {
 
     // Keep existing TTL or use default
     const expiryTime = ttl > 0 ? ttl : ROOM_TTL;
+
+    // Log warning if TTL is getting low (less than 1 hour)
+    if (ttl > 0 && ttl < 3600) {
+      console.log(
+        `[ROOM_TTL_WARNING] Room ${room.code}: TTL is low (${ttl}s / ${Math.round(ttl / 60)}min)`,
+        {
+          roomCode: room.code,
+          ttl,
+          roomAge: Math.round((Date.now() - room.createdAt) / 1000),
+          memberCount: room.members.size,
+        },
+      );
+    }
 
     await this.redis.setex(key, expiryTime, serializeRoom(room));
   }
@@ -113,19 +135,47 @@ export class RoomStorage {
     // Get all room keys
     const keys = await this.redis.keys(pattern);
 
+    console.log(
+      `[CLEANUP_START] Starting cleanup cycle: ${keys.length} active room(s)`,
+    );
+
     for (const key of keys) {
       const data = await this.redis.get(key);
       if (!data) continue;
 
       const room = deserializeRoom(data);
       let modified = false;
+      const inactiveMembersRemoved: Array<{
+        id: string;
+        name: string;
+        inactiveDuration: number;
+      }> = [];
 
       // Remove inactive members
       for (const [memberId, member] of room.members) {
-        if (now - member.lastActivity > inactivityTimeout) {
+        const inactiveDuration = now - member.lastActivity;
+        if (inactiveDuration > inactivityTimeout) {
+          inactiveMembersRemoved.push({
+            id: memberId,
+            name: member.name,
+            inactiveDuration: Math.round(inactiveDuration / 1000), // Convert to seconds
+          });
           room.members.delete(memberId);
           modified = true;
         }
+      }
+
+      // Log inactive member removals
+      if (inactiveMembersRemoved.length > 0) {
+        console.log(
+          `[CLEANUP_INACTIVE_MEMBERS] Room ${room.code}: Removed ${inactiveMembersRemoved.length} inactive member(s)`,
+          {
+            roomCode: room.code,
+            roomAge: Math.round((now - room.createdAt) / 1000),
+            remainingMembers: room.members.size,
+            removedMembers: inactiveMembersRemoved,
+          },
+        );
       }
 
       // Delete room if empty AND past grace period, otherwise update
@@ -134,9 +184,26 @@ export class RoomStorage {
         // Only delete empty rooms that are older than the grace period
         // This prevents race condition where room is deleted before first member joins
         if (roomAge > EMPTY_ROOM_GRACE_PERIOD) {
+          console.log(
+            `[CLEANUP_EMPTY_ROOM] Room ${room.code}: Deleting empty room past grace period`,
+            {
+              roomCode: room.code,
+              roomAge: Math.round(roomAge / 1000),
+              gracePeriod: Math.round(EMPTY_ROOM_GRACE_PERIOD / 1000),
+              hadInactiveMembers: inactiveMembersRemoved.length > 0,
+            },
+          );
           await this.redis.del(key);
         } else if (modified) {
           // Room is empty but within grace period - update to persist member removals
+          console.log(
+            `[CLEANUP_EMPTY_ROOM_GRACE] Room ${room.code}: Empty but within grace period, preserving room`,
+            {
+              roomCode: room.code,
+              roomAge: Math.round(roomAge / 1000),
+              gracePeriod: Math.round(EMPTY_ROOM_GRACE_PERIOD / 1000),
+            },
+          );
           await this.updateRoom(room);
         }
       } else if (modified) {

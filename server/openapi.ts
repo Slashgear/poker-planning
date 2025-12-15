@@ -311,6 +311,16 @@ export function createOpenAPIApp(
     room.members.set(sessionId, member);
     await storage.updateRoom(room);
 
+    console.log(
+      `[MEMBER_JOINED] Room ${code}: Member "${name}" joined (${sessionId})`,
+      {
+        roomCode: code,
+        memberId: sessionId,
+        memberName: name,
+        totalMembers: room.members.size,
+      },
+    );
+
     // Set cookie
     setCookie(c, "session_id", sessionId, {
       httpOnly: true,
@@ -619,8 +629,24 @@ export function createOpenAPIApp(
       return c.json({ error: "Member not found" }, 404);
     }
 
+    const removedMember = room.members.get(memberId);
+    const removedBy = room.members.get(sessionId);
+
     room.members.delete(memberId);
     await storage.updateRoom(room);
+
+    console.log(
+      `[MEMBER_REMOVED_MANUALLY] Room ${code}: Member "${removedMember?.name}" removed by "${removedBy?.name}"`,
+      {
+        roomCode: code,
+        removedMemberId: memberId,
+        removedMemberName: removedMember?.name,
+        removedBy: sessionId,
+        removedByName: removedBy?.name,
+        remainingMembers: room.members.size,
+      },
+    );
+
     await broadcastToRoom(code);
 
     return c.json({ success: true });
@@ -684,12 +710,31 @@ export function createOpenAPIApp(
         // Update activity
         if (sessionId) {
           const latestRoom = await storage.getRoom(code);
-          if (latestRoom) {
-            const member = latestRoom.members.get(sessionId);
-            if (member) {
-              member.lastActivity = Date.now();
-              await storage.updateRoom(latestRoom);
-            }
+          if (!latestRoom) {
+            console.log(
+              `[SSE_ROOM_DISAPPEARED] Room ${code}: Room disappeared during SSE keep-alive for member ${sessionId}`,
+              {
+                roomCode: code,
+                memberId: sessionId,
+              },
+            );
+            // Room was deleted, close the connection
+            break;
+          }
+
+          const member = latestRoom.members.get(sessionId);
+          if (member) {
+            member.lastActivity = Date.now();
+            await storage.updateRoom(latestRoom);
+          } else {
+            console.log(
+              `[SSE_MEMBER_DISAPPEARED] Room ${code}: Member ${sessionId} no longer in room during SSE keep-alive`,
+              {
+                roomCode: code,
+                memberId: sessionId,
+                remainingMembers: latestRoom.members.size,
+              },
+            );
           }
         }
       }
