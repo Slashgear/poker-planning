@@ -127,7 +127,7 @@ You can customize test parameters using environment variables:
 
 ```bash
 # Test against different URL
-API_URL=https://poker-staging.slashgear.dev pnpm run test:load:basic
+API_URL=https://poker.slashgear.dev pnpm run test:load:basic
 
 # Run k6 with custom options
 k6 run --vus 50 --duration 2m tests/load/scenarios/basic-workflow.js

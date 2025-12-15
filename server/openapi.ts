@@ -775,10 +775,6 @@ Authentication is handled via httpOnly cookies (\`session_id\`). The cookie is a
         description: "Production server",
       },
       {
-        url: "https://poker-staging.slashgear.dev/api",
-        description: "Staging server",
-      },
-      {
         url: "http://localhost:3001/api",
         description: "Local development server",
       },

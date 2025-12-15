@@ -1,7 +1,6 @@
 # Poker Planning
 
 [![CI/CD](https://github.com/Slashgear/poker-planning/actions/workflows/ci.yml/badge.svg)](https://github.com/Slashgear/poker-planning/actions/workflows/ci.yml)
-[![Staging](https://img.shields.io/badge/staging-deployed-blue)](https://poker-staging.slashgear.dev)
 [![Production](https://img.shields.io/badge/production-deployed-green)](https://poker.slashgear.dev)
 
 Collaborative poker planning web application for agile team estimation using the Fibonacci sequence.
@@ -334,7 +333,6 @@ graph TB
             Redis[("Redis Managed Database<br/>rediss://10.x.x.x:6379<br/>TLS Enabled")]
 
             subgraph "Serverless Containers"
-                Staging["Staging Container<br/>Image: latest<br/>Auto-deploy on push to main"]
                 Prod["Production Container<br/>Image: v2.x.x<br/>Deploy on git tags"]
             end
         end
@@ -345,17 +343,13 @@ graph TB
     end
 
     GHA -->|1. Build & Push| GHCR
-    GHA -->|2. Deploy| Staging
     GHA -->|2. Deploy| Prod
 
-    GHCR -.->|Pull Image| Staging
     GHCR -.->|Pull Image| Prod
 
-    Staging -->|rediss://| Redis
     Prod -->|rediss://| Redis
 
     style Redis fill:#dc3545
-    style Staging fill:#17a2b8
     style Prod fill:#28a745
     style GHCR fill:#6c757d
     style GHA fill:#ffc107
