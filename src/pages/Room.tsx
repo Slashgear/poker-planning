@@ -74,12 +74,8 @@ function MemberCard({
       </div>
 
       {/* Name */}
-      <div className="text-sm text-purple-200 truncate font-medium">
-        {member.name}
-      </div>
-      {isCurrentUser && (
-        <div className="text-xs text-purple-400 mt-0.5">you</div>
-      )}
+      <div className="text-sm text-purple-200 truncate font-medium">{member.name}</div>
+      {isCurrentUser && <div className="text-xs text-purple-400 mt-0.5">you</div>}
 
       {/* Vote indicator */}
       <div
@@ -112,9 +108,7 @@ export default function Room() {
   const [name, setName] = useState("");
   const [isJoining, setIsJoining] = useState(false);
   const [joinError, setJoinError] = useState<string | null>(null);
-  const [selectedValue, setSelectedValue] = useState<number | string | null>(
-    null,
-  );
+  const [selectedValue, setSelectedValue] = useState<number | string | null>(null);
   const [copied, setCopied] = useState(false);
   const previousShowResults = useRef(false);
   const [announcement, setAnnouncement] = useState<string>("");
@@ -152,8 +146,7 @@ export default function Room() {
       .map((m) => m.vote)
       .filter((v): v is number | string => v !== null && v !== "hidden");
 
-    const hasConsensus =
-      votes.length >= 2 && votes.every((v) => v === votes[0]);
+    const hasConsensus = votes.length >= 2 && votes.every((v) => v === votes[0]);
 
     if (roomState.showResults && !previousShowResults.current) {
       if (hasConsensus) {
@@ -331,9 +324,7 @@ export default function Room() {
     .filter((v): v is number => typeof v === "number" && v !== 0);
 
   const average =
-    numericVotes.length > 0
-      ? numericVotes.reduce((a, b) => a + b, 0) / numericVotes.length
-      : 0;
+    numericVotes.length > 0 ? numericVotes.reduce((a, b) => a + b, 0) / numericVotes.length : 0;
 
   return (
     <>
@@ -357,31 +348,20 @@ export default function Room() {
       >
         <div className="container mx-auto px-4 py-4 flex-1 flex flex-col">
           {/* Live region for screen reader announcements */}
-          <div
-            role="status"
-            aria-live="polite"
-            aria-atomic="true"
-            className="sr-only"
-          >
+          <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
             {announcement}
           </div>
 
           {/* Header */}
           <header className="text-center mb-4">
-            <h1 className="text-2xl font-bold text-white mb-1">
-              Poker Planning
-            </h1>
+            <h1 className="text-2xl font-bold text-white mb-1">Poker Planning</h1>
             <div className="flex items-center justify-center gap-4">
               <p className="text-sm text-purple-200">
                 Room: <span className="font-mono font-bold">{code}</span>
               </p>
               <button
                 onClick={handleCopyUrl}
-                aria-label={
-                  copied
-                    ? "Room URL copied to clipboard"
-                    : "Copy room URL to clipboard"
-                }
+                aria-label={copied ? "Room URL copied to clipboard" : "Copy room URL to clipboard"}
                 className="text-xs bg-purple-600/50 hover:bg-purple-600 text-white px-3 py-1 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-purple-400"
               >
                 {copied ? "Copied!" : "Copy URL"}
@@ -418,11 +398,7 @@ export default function Room() {
             </section>
 
             {/* Voting cards */}
-            <section
-              id="voting"
-              aria-labelledby="voting-label"
-              className="mb-6"
-            >
+            <section id="voting" aria-labelledby="voting-label" className="mb-6">
               <h3
                 id="voting-label"
                 className="text-sm font-medium text-purple-200 mb-3 text-center"
@@ -439,8 +415,7 @@ export default function Room() {
               >
                 {FIBONACCI_VALUES.map((value, index) => {
                   const isSelected = selectedValue === value;
-                  const shouldHaveTabIndex =
-                    isSelected || (selectedValue === null && index === 0);
+                  const shouldHaveTabIndex = isSelected || (selectedValue === null && index === 0);
 
                   return (
                     <li key={value} className="list-none">
@@ -455,17 +430,12 @@ export default function Room() {
                           // Arrow navigation
                           if (e.key === "ArrowRight" || e.key === "ArrowDown") {
                             e.preventDefault();
-                            const nextIndex =
-                              (index + 1) % FIBONACCI_VALUES.length;
+                            const nextIndex = (index + 1) % FIBONACCI_VALUES.length;
                             getVotingButton(nextIndex)?.focus();
-                          } else if (
-                            e.key === "ArrowLeft" ||
-                            e.key === "ArrowUp"
-                          ) {
+                          } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
                             e.preventDefault();
                             const prevIndex =
-                              (index - 1 + FIBONACCI_VALUES.length) %
-                              FIBONACCI_VALUES.length;
+                              (index - 1 + FIBONACCI_VALUES.length) % FIBONACCI_VALUES.length;
                             getVotingButton(prevIndex)?.focus();
                           } else if (e.key === " " || e.key === "Enter") {
                             e.preventDefault();
@@ -475,9 +445,7 @@ export default function Room() {
                             getVotingButton(0)?.focus();
                           } else if (e.key === "End") {
                             e.preventDefault();
-                            getVotingButton(
-                              FIBONACCI_VALUES.length - 1,
-                            )?.focus();
+                            getVotingButton(FIBONACCI_VALUES.length - 1)?.focus();
                           }
                         }}
                         className={`
@@ -513,9 +481,7 @@ export default function Room() {
                     className="bg-green-600 text-white font-semibold py-2 px-6 rounded-lg cursor-default flex items-center gap-2 focus:outline-none focus:ring-4 focus:ring-green-400/50"
                   >
                     <span>Revealing in</span>
-                    <span className="text-2xl font-bold tabular-nums">
-                      {revealCountdown}
-                    </span>
+                    <span className="text-2xl font-bold tabular-nums">{revealCountdown}</span>
                   </button>
                   <button
                     onClick={cancelRevealCountdown}
@@ -555,18 +521,13 @@ export default function Room() {
 
             {/* Statistics */}
             {showResults && members.length > 0 && (
-              <section
-                aria-label="Voting statistics"
-                className="bg-white/5 rounded-xl p-4 mb-4"
-              >
+              <section aria-label="Voting statistics" className="bg-white/5 rounded-xl p-4 mb-4">
                 {/* Average */}
                 {numericVotes.length > 0 && (
                   <div className="text-center mb-4">
                     <p className="text-purple-200">
                       Average:{" "}
-                      <span className="font-bold text-white text-2xl">
-                        {average.toFixed(1)}
-                      </span>
+                      <span className="font-bold text-white text-2xl">{average.toFixed(1)}</span>
                     </p>
                   </div>
                 )}
@@ -583,26 +544,17 @@ export default function Room() {
                   });
 
                   // Don't show if less than 3 voters or everyone voted the same
-                  const totalVoters = Array.from(voteCounts.values()).reduce(
-                    (a, b) => a + b,
-                    0,
-                  );
-                  if (
-                    voteCounts.size === 0 ||
-                    totalVoters < 3 ||
-                    voteCounts.size === 1
-                  )
+                  const totalVoters = Array.from(voteCounts.values()).reduce((a, b) => a + b, 0);
+                  if (voteCounts.size === 0 || totalVoters < 3 || voteCounts.size === 1)
                     return null;
 
                   const maxCount = Math.max(...voteCounts.values());
-                  const sortedVotes = Array.from(voteCounts.entries()).sort(
-                    (a, b) => {
-                      // Sort by value (numbers first, then strings)
-                      const aNum = typeof a[0] === "number" ? a[0] : Infinity;
-                      const bNum = typeof b[0] === "number" ? b[0] : Infinity;
-                      return aNum - bNum;
-                    },
-                  );
+                  const sortedVotes = Array.from(voteCounts.entries()).sort((a, b) => {
+                    // Sort by value (numbers first, then strings)
+                    const aNum = typeof a[0] === "number" ? a[0] : Infinity;
+                    const bNum = typeof b[0] === "number" ? b[0] : Infinity;
+                    return aNum - bNum;
+                  });
 
                   return (
                     <div className="space-y-2 mt-6">
@@ -626,9 +578,7 @@ export default function Room() {
                                   height: `${Math.max(heightPx, 12)}px`,
                                 }}
                               />
-                              <span className="text-base font-bold text-white mt-1">
-                                {value}
-                              </span>
+                              <span className="text-base font-bold text-white mt-1">{value}</span>
                             </div>
                           );
                         })}

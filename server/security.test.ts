@@ -1,10 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import {
-  isValidVote,
-  isValidName,
-  isValidRoomCode,
-  securityHeaders,
-} from "./security.js";
+import { isValidVote, isValidName, isValidRoomCode, securityHeaders } from "./security.js";
 import type { Context } from "hono";
 
 describe("isValidVote", () => {

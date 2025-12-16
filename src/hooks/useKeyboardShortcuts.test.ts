@@ -293,17 +293,11 @@ describe("useKeyboardShortcuts", () => {
         }),
       );
 
-      expect(addEventListenerSpy).toHaveBeenCalledWith(
-        "keydown",
-        expect.any(Function),
-      );
+      expect(addEventListenerSpy).toHaveBeenCalledWith("keydown", expect.any(Function));
 
       unmount();
 
-      expect(removeEventListenerSpy).toHaveBeenCalledWith(
-        "keydown",
-        expect.any(Function),
-      );
+      expect(removeEventListenerSpy).toHaveBeenCalledWith("keydown", expect.any(Function));
 
       addEventListenerSpy.mockRestore();
       removeEventListenerSpy.mockRestore();

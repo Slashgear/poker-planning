@@ -25,12 +25,9 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
       <div className="text-center px-4">
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          Poker Planning
-        </h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Poker Planning</h1>
         <p className="text-lg text-purple-200 mb-8 max-w-md mx-auto">
-          Collaborative estimation with the Fibonacci sequence. Create a room
-          and invite your team.
+          Collaborative estimation with the Fibonacci sequence. Create a room and invite your team.
         </p>
 
         <button

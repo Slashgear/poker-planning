@@ -51,16 +51,12 @@ export default function () {
       const sessionCookie = joinRes.cookies.session_id?.[0]?.value;
 
       // Vote
-      http.post(
-        `${BASE_URL}/api/rooms/${roomCode}/vote`,
-        JSON.stringify({ value: "5" }),
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Cookie: `session_id=${sessionCookie}`,
-          },
+      http.post(`${BASE_URL}/api/rooms/${roomCode}/vote`, JSON.stringify({ value: "5" }), {
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `session_id=${sessionCookie}`,
         },
-      );
+      });
     }
   } else {
     errorRate.add(1);

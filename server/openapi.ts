@@ -67,9 +67,7 @@ const MemberSchema = z
   .object({
     id: z.string().openapi({ example: "abc123def456" }),
     name: z.string().openapi({ example: "Alice" }),
-    vote: z
-      .union([z.number().int(), z.enum(["?", "☕"]), z.null()])
-      .openapi({ example: 5 }),
+    vote: z.union([z.number().int(), z.enum(["?", "☕"]), z.null()]).openapi({ example: 5 }),
   })
   .openapi("Member");
 
@@ -162,8 +160,7 @@ export function createOpenAPIApp(
     path: "/rooms",
     tags: ["rooms"],
     summary: "Create a new room",
-    description:
-      "Creates a new poker planning room with a unique 6-character code",
+    description: "Creates a new poker planning room with a unique 6-character code",
     responses: {
       200: {
         description: "Room created successfully",
@@ -270,8 +267,7 @@ export function createOpenAPIApp(
         description: "Successfully joined the room",
         headers: z.object({
           "Set-Cookie": z.string().openapi({
-            example:
-              "session_id=abc123; Path=/; HttpOnly; SameSite=Lax; Max-Age=7200",
+            example: "session_id=abc123; Path=/; HttpOnly; SameSite=Lax; Max-Age=7200",
           }),
         }),
         content: {
@@ -358,15 +354,12 @@ export function createOpenAPIApp(
     // Increment cumulative participants counter
     await storage.incrementStat("participants");
 
-    console.log(
-      `[MEMBER_JOINED] Room ${code}: Member "${name}" joined (${sessionId})`,
-      {
-        roomCode: code,
-        memberId: sessionId,
-        memberName: name,
-        totalMembers: room.members.size,
-      },
-    );
+    console.log(`[MEMBER_JOINED] Room ${code}: Member "${name}" joined (${sessionId})`, {
+      roomCode: code,
+      memberId: sessionId,
+      memberName: name,
+      totalMembers: room.members.size,
+    });
 
     // Set cookie
     setCookie(c, "session_id", sessionId, {
@@ -563,8 +556,7 @@ export function createOpenAPIApp(
     path: "/rooms/{code}/reset",
     tags: ["voting"],
     summary: "Reset the voting session",
-    description:
-      "Reset the current voting session. Clears all votes and hides results.",
+    description: "Reset the current voting session. Clears all votes and hides results.",
     security: [{ cookieAuth: [] }],
     request: {
       params: z.object({

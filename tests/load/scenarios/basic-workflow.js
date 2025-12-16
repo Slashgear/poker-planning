@@ -198,17 +198,13 @@ export default function () {
   // 5. Reveal votes (only some users will do this)
   if (Math.random() < 0.3) {
     // 30% chance
-    let revealRes = http.post(
-      `${BASE_URL}/api/rooms/${roomCode}/reveal`,
-      null,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Cookie: `session=${sessionCookie}`,
-        },
-        tags: { name: "Reveal" },
+    let revealRes = http.post(`${BASE_URL}/api/rooms/${roomCode}/reveal`, null, {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `session=${sessionCookie}`,
       },
-    );
+      tags: { name: "Reveal" },
+    });
 
     const revealSuccess = check(revealRes, {
       "votes revealed": (r) => r.status === 200,
@@ -226,17 +222,13 @@ export default function () {
     // 6. Reset the room (some users)
     if (Math.random() < 0.5) {
       // 50% chance after reveal
-      let resetRes = http.post(
-        `${BASE_URL}/api/rooms/${roomCode}/reset`,
-        null,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Cookie: `session=${sessionCookie}`,
-          },
-          tags: { name: "Reset" },
+      let resetRes = http.post(`${BASE_URL}/api/rooms/${roomCode}/reset`, null, {
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `session=${sessionCookie}`,
         },
-      );
+        tags: { name: "Reset" },
+      });
 
       check(resetRes, {
         "room reset": (r) => r.status === 200,
