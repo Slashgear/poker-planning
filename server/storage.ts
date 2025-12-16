@@ -26,6 +26,19 @@ export interface RoomState {
   showResults: boolean;
 }
 
+export interface GlobalStats {
+  cumulative: {
+    rooms: number;
+    participants: number;
+    votes: number;
+  };
+  active: {
+    rooms: number;
+    participants: number;
+    votes: number;
+  };
+}
+
 // Constants
 const ROOM_TTL = 2 * 60 * 60; // 2 hours in seconds
 const ROOM_KEY_PREFIX = "room:";
@@ -80,6 +93,9 @@ export class RoomStorage {
     console.log(
       `[ROOM_CREATED] Room ${code} created with TTL ${ROOM_TTL}s (${ROOM_TTL / 3600}h)`,
     );
+
+    // Increment cumulative rooms counter
+    await this.incrementStat("rooms");
 
     return room;
   }
@@ -209,6 +225,72 @@ export class RoomStorage {
       } else if (modified) {
         await this.updateRoom(room);
       }
+    }
+  }
+
+  async incrementStat(statName: string): Promise<void> {
+    try {
+      const key = `stats:${statName}:total`;
+      await this.redis.incr(key);
+    } catch (error) {
+      console.error(
+        `[STATS_INCREMENT_ERROR] Failed to increment ${statName}:`,
+        error,
+      );
+      // Non-blocking: don't throw, stats are non-critical
+    }
+  }
+
+  async getStats(): Promise<GlobalStats> {
+    try {
+      // Get cumulative stats from Redis counters
+      const [totalRooms, totalParticipants, totalVotes] = await Promise.all([
+        this.redis.get("stats:rooms:total"),
+        this.redis.get("stats:participants:total"),
+        this.redis.get("stats:votes:total"),
+      ]);
+
+      // Calculate active stats by scanning all rooms
+      const pattern = `${ROOM_KEY_PREFIX}*`;
+      const keys = await this.redis.keys(pattern);
+
+      let activeParticipants = 0;
+      let activeVotes = 0;
+
+      for (const key of keys) {
+        const data = await this.redis.get(key);
+        if (!data) continue;
+
+        const room = deserializeRoom(data);
+        activeParticipants += room.members.size;
+
+        // Count non-null votes
+        for (const member of room.members.values()) {
+          if (member.vote !== null) {
+            activeVotes++;
+          }
+        }
+      }
+
+      return {
+        cumulative: {
+          rooms: parseInt(totalRooms || "0", 10),
+          participants: parseInt(totalParticipants || "0", 10),
+          votes: parseInt(totalVotes || "0", 10),
+        },
+        active: {
+          rooms: keys.length,
+          participants: activeParticipants,
+          votes: activeVotes,
+        },
+      };
+    } catch (error) {
+      console.error("[STATS_FETCH_ERROR] Failed to fetch stats:", error);
+      // Return zeros on error
+      return {
+        cumulative: { rooms: 0, participants: 0, votes: 0 },
+        active: { rooms: 0, participants: 0, votes: 0 },
+      };
     }
   }
 }

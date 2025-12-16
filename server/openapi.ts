@@ -27,6 +27,25 @@ const SuccessSchema = z
   })
   .openapi("Success");
 
+const StatsSchema = z
+  .object({
+    cumulative: z
+      .object({
+        rooms: z.number().int().openapi({ example: 1523 }),
+        participants: z.number().int().openapi({ example: 8947 }),
+        votes: z.number().int().openapi({ example: 45231 }),
+      })
+      .openapi({ description: "Total historical statistics" }),
+    active: z
+      .object({
+        rooms: z.number().int().openapi({ example: 12 }),
+        participants: z.number().int().openapi({ example: 68 }),
+        votes: z.number().int().openapi({ example: 203 }),
+      })
+      .openapi({ description: "Currently active statistics" }),
+  })
+  .openapi("Stats");
+
 const MemberInfoSchema = z
   .object({
     id: z.string().openapi({ example: "abc123def456" }),
@@ -110,6 +129,31 @@ export function createOpenAPIApp(
 
   app.openapi(healthRoute, (c) => {
     return c.json({ status: "ok" });
+  });
+
+  // Stats route
+  const statsRoute = createRoute({
+    method: "get",
+    path: "/stats",
+    tags: ["stats"],
+    summary: "Get global statistics",
+    description:
+      "Retrieves global platform statistics including both cumulative (all-time) and active (current) metrics",
+    responses: {
+      200: {
+        description: "Statistics retrieved successfully",
+        content: {
+          "application/json": {
+            schema: StatsSchema,
+          },
+        },
+      },
+    },
+  });
+
+  app.openapi(statsRoute, async (c) => {
+    const stats = await storage.getStats();
+    return c.json(stats);
   });
 
   // Create room route
@@ -311,6 +355,9 @@ export function createOpenAPIApp(
     room.members.set(sessionId, member);
     await storage.updateRoom(room);
 
+    // Increment cumulative participants counter
+    await storage.incrementStat("participants");
+
     console.log(
       `[MEMBER_JOINED] Room ${code}: Member "${name}" joined (${sessionId})`,
       {
@@ -433,8 +480,15 @@ export function createOpenAPIApp(
       return c.json({ error: "Not a member of this room" }, 403);
     }
 
+    // Track previous vote to increment counter only on first vote
+    const previousVote = member.vote;
     member.vote = value;
     member.lastActivity = Date.now();
+
+    // Increment cumulative votes counter only on first vote (not on vote changes)
+    if (previousVote === null && value !== null) {
+      await storage.incrementStat("votes");
+    }
 
     await storage.updateRoom(room);
     await broadcastToRoom(code);
