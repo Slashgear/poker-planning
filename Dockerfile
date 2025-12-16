@@ -1,5 +1,5 @@
 # Build stage
-FROM node:24.11.1-alpine AS builder
+FROM node:24.12.0-alpine AS builder
 
 WORKDIR /app
 
@@ -29,7 +29,7 @@ RUN find dist -type f \( -name "*.js" -o -name "*.css" -o -name "*.html" -o -nam
     done
 
 # Production stage - Node.js server serving both API and static files
-FROM node:24.11.1-alpine AS production
+FROM node:24.12.0-alpine AS production
 
 WORKDIR /app
 
