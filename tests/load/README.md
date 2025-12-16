@@ -15,17 +15,20 @@ Load testing helps ensure the application can handle expected traffic and identi
 **Purpose**: Simulates realistic poker planning sessions with gradual load increase.
 
 **Configuration**:
+
 - Ramp up: 30s to 10 users, 30s to 20 users
 - Steady state: 1 minute at each level
 - Ramp down: 30s to 0
 
 **Thresholds**:
+
 - Error rate: < 1%
 - 95% of requests: < 500ms
 - Room creation: < 300ms
 - Join/Vote: < 200ms
 
 **Simulates**:
+
 - Creating rooms
 - Members joining
 - Voting on tasks
@@ -41,12 +44,14 @@ pnpm run test:load:basic
 **Purpose**: Tests system behavior under sudden traffic surges.
 
 **Configuration**:
+
 - Warm up: 10s at 5 users
 - Spike: 10s ramp to 100 users
 - Maintain: 1 minute at 100 users
 - Recovery: 10s ramp down
 
 **Thresholds**:
+
 - Error rate: < 5% (allows higher during spike)
 - 95% of requests: < 1s
 
@@ -59,11 +64,13 @@ pnpm run test:load:spike
 **Purpose**: Find the breaking point of the application.
 
 **Configuration**:
+
 - Gradual ramp: 50 → 100 → 150 → 200 users (2min each)
 - Stress period: 5 minutes at 200 users
 - Ramp down: 2 minutes
 
 **Thresholds**:
+
 - Error rate: < 10%
 - 95% of requests: < 2s
 - HTTP failures: < 10%
@@ -79,11 +86,13 @@ pnpm run test:load:stress
 Install k6:
 
 **macOS**:
+
 ```bash
 brew install k6
 ```
 
 **Linux (Debian/Ubuntu)**:
+
 ```bash
 sudo gpg -k
 sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
@@ -93,6 +102,7 @@ sudo apt-get install k6
 ```
 
 **Windows**:
+
 ```powershell
 choco install k6
 ```
@@ -100,16 +110,19 @@ choco install k6
 ### Setup
 
 1. Start Redis (or Valkey):
+
 ```bash
 docker-compose up -d redis
 ```
 
 2. Start the application server:
+
 ```bash
 REDIS_URL=redis://localhost:6379 pnpm run dev:server
 ```
 
 3. In another terminal, run the tests:
+
 ```bash
 # Run basic load test
 pnpm run test:load:basic
@@ -144,6 +157,7 @@ Load tests run automatically in GitHub Actions:
 - **On Main Branch**: Basic workflow + Spike test
 
 The CI job:
+
 1. Starts Redis service
 2. Starts the application server
 3. Runs basic load test
@@ -187,16 +201,19 @@ vus............................: 10      min=0       max=20
 ### Interpreting Results
 
 **Good Performance**:
+
 - p(95) < 500ms for normal operations
 - Error rate < 1%
 - All thresholds passing
 
 **Warning Signs**:
+
 - p(95) > 1s
 - Error rate > 1%
 - Increasing response times over test duration
 
 **Performance Issues**:
+
 - p(95) > 2s
 - Error rate > 5%
 - Timeouts or connection errors
@@ -206,16 +223,19 @@ vus............................: 10      min=0       max=20
 ### Test Failures
 
 **"API is not healthy"**:
+
 - Ensure Redis is running
 - Ensure application server is started
 - Check `http://localhost:3001/api/health`
 
 **High error rates**:
+
 - Check server logs for errors
 - Verify Redis connection
 - Check resource limits (memory, CPU)
 
 **Timeouts**:
+
 - Increase timeout in test configuration
 - Check network connectivity
 - Verify server is not overloaded

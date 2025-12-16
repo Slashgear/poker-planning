@@ -18,10 +18,7 @@ export function useKeyboardShortcuts({
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       // Ignore if user is typing in an input field
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement
-      ) {
+      if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
         return;
       }
 

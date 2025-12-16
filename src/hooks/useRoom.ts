@@ -142,10 +142,9 @@ export function useRoom(roomCode: string) {
   useEffect(() => {
     fetchRoomInfo();
 
-    const eventSource = new EventSource(
-      `${API_BASE}/api/rooms/${roomCode}/events`,
-      { withCredentials: true },
-    );
+    const eventSource = new EventSource(`${API_BASE}/api/rooms/${roomCode}/events`, {
+      withCredentials: true,
+    });
 
     eventSource.addEventListener("update", (event) => {
       const data = JSON.parse(event.data);
@@ -176,9 +175,7 @@ export function useRoom(roomCode: string) {
   };
 }
 
-export async function createRoom(): Promise<
-  { code: string } | { error: string }
-> {
+export async function createRoom(): Promise<{ code: string } | { error: string }> {
   const API_BASE = import.meta.env.DEV ? "http://localhost:3001" : "";
 
   try {

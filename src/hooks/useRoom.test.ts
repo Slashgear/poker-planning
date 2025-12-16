@@ -20,13 +20,10 @@ describe("createRoom", () => {
 
     // The function uses import.meta.env.DEV which is evaluated at runtime
     // In tests, it will use localhost because we're in a dev environment
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringMatching(/\/api\/rooms$/),
-      {
-        method: "POST",
-        credentials: "include",
-      },
-    );
+    expect(mockFetch).toHaveBeenCalledWith(expect.stringMatching(/\/api\/rooms$/), {
+      method: "POST",
+      credentials: "include",
+    });
     expect(result).toEqual({ code: "ABC123" });
   });
 
@@ -58,12 +55,9 @@ describe("createRoom", () => {
     await createRoom();
 
     // Verify that fetch is called with some URL ending in /api/rooms
-    expect(mockFetch).toHaveBeenCalledWith(
-      expect.stringMatching(/\/api\/rooms$/),
-      {
-        method: "POST",
-        credentials: "include",
-      },
-    );
+    expect(mockFetch).toHaveBeenCalledWith(expect.stringMatching(/\/api\/rooms$/), {
+      method: "POST",
+      credentials: "include",
+    });
   });
 });

@@ -34,10 +34,7 @@ export class PlanningPage {
   // Vote with a specific value
   async vote(value: string | number) {
     // Target the voting cards section specifically
-    const votingSection = this.page
-      .locator("div")
-      .filter({ hasText: "Your vote:" })
-      .first();
+    const votingSection = this.page.locator("div").filter({ hasText: "Your vote:" }).first();
     const voteButton = votingSection
       .locator("button")
       .filter({ hasText: new RegExp(`^${value}$`) });
@@ -47,18 +44,14 @@ export class PlanningPage {
 
   // Verify that a member has voted (shows '?' before reveal)
   async expectMemberVoted(userName: string) {
-    const memberCard = this.page
-      .locator(".grid > div")
-      .filter({ hasText: userName });
+    const memberCard = this.page.locator(".grid > div").filter({ hasText: userName });
     const voteDisplay = memberCard.locator(".text-3xl");
     await expect(voteDisplay).toHaveText("?");
   }
 
   // Verify that a member has not voted (shows '-')
   async expectMemberNotVoted(userName: string) {
-    const memberCard = this.page
-      .locator(".grid > div")
-      .filter({ hasText: userName });
+    const memberCard = this.page.locator(".grid > div").filter({ hasText: userName });
     const voteDisplay = memberCard.locator(".text-3xl");
     await expect(voteDisplay).toHaveText("-");
   }
@@ -70,9 +63,7 @@ export class PlanningPage {
 
   // Verify the result of a revealed vote
   async expectRevealedVote(userName: string, value: string | number) {
-    const memberCard = this.page
-      .locator(".grid > div")
-      .filter({ hasText: userName });
+    const memberCard = this.page.locator(".grid > div").filter({ hasText: userName });
     const voteDisplay = memberCard.locator(".text-3xl");
     await expect(voteDisplay).toHaveText(value.toString());
   }
@@ -108,26 +99,19 @@ export class PlanningPage {
 
   // Remove a member from the room
   async removeMember(userName: string) {
-    const memberCard = this.page
-      .locator(".grid > div")
-      .filter({ hasText: userName });
+    const memberCard = this.page.locator(".grid > div").filter({ hasText: userName });
     await memberCard.locator("button").click();
   }
 
   // Verify a member is no longer in the room
   async expectMemberNotPresent(userName: string) {
-    const memberCard = this.page
-      .locator(".grid > div")
-      .filter({ hasText: userName });
+    const memberCard = this.page.locator(".grid > div").filter({ hasText: userName });
     await expect(memberCard).not.toBeVisible();
   }
 
   // Get the current room code from the page
   async getRoomCode(): Promise<string> {
-    const codeText = await this.page
-      .locator("text=Room:")
-      .locator("..")
-      .innerText();
+    const codeText = await this.page.locator("text=Room:").locator("..").innerText();
     const match = codeText.match(/Room:\s*([A-Z0-9]+)/);
     return match ? match[1] : "";
   }

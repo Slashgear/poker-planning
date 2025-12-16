@@ -84,15 +84,9 @@ export class RoomStorage {
       createdAt: Date.now(),
     };
 
-    await this.redis.setex(
-      this.getRoomKey(code),
-      ROOM_TTL,
-      serializeRoom(room),
-    );
+    await this.redis.setex(this.getRoomKey(code), ROOM_TTL, serializeRoom(room));
 
-    console.log(
-      `[ROOM_CREATED] Room ${code} created with TTL ${ROOM_TTL}s (${ROOM_TTL / 3600}h)`,
-    );
+    console.log(`[ROOM_CREATED] Room ${code} created with TTL ${ROOM_TTL}s (${ROOM_TTL / 3600}h)`);
 
     // Increment cumulative rooms counter
     await this.incrementStat("rooms");
@@ -151,9 +145,7 @@ export class RoomStorage {
     // Get all room keys
     const keys = await this.redis.keys(pattern);
 
-    console.log(
-      `[CLEANUP_START] Starting cleanup cycle: ${keys.length} active room(s)`,
-    );
+    console.log(`[CLEANUP_START] Starting cleanup cycle: ${keys.length} active room(s)`);
 
     for (const key of keys) {
       const data = await this.redis.get(key);
@@ -233,10 +225,7 @@ export class RoomStorage {
       const key = `stats:${statName}:total`;
       await this.redis.incr(key);
     } catch (error) {
-      console.error(
-        `[STATS_INCREMENT_ERROR] Failed to increment ${statName}:`,
-        error,
-      );
+      console.error(`[STATS_INCREMENT_ERROR] Failed to increment ${statName}:`, error);
       // Non-blocking: don't throw, stats are non-critical
     }
   }

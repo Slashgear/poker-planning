@@ -9,9 +9,7 @@ export default function NotFound() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center">
       <div className="text-center px-4">
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          Not Found
-        </h1>
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">Not Found</h1>
         <p className="text-lg text-purple-200 mb-8 max-w-md mx-auto">
           The page you're looking for doesn't exist.
         </p>

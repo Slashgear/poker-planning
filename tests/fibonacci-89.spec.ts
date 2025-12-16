@@ -89,9 +89,7 @@ test.describe("Fibonacci value 89 support", () => {
     await context2.close();
   });
 
-  test("Mix of all Fibonacci values including 89, 55, and 34", async ({
-    browser,
-  }) => {
+  test("Mix of all Fibonacci values including 89, 55, and 34", async ({ browser }) => {
     const context1 = await browser.newContext();
     const context2 = await browser.newContext();
     const context3 = await browser.newContext();
