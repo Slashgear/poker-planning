@@ -16,6 +16,17 @@ function LoadingSpinner() {
   );
 }
 
+// Initialize axe-core for accessibility testing in development
+if (import.meta.env.DEV) {
+  import("@axe-core/react")
+    .then((axe) => {
+      axe.default(React, ReactDOM, 1000);
+    })
+    .catch((err) => {
+      console.error("Failed to load axe-core:", err);
+    });
+}
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Suspense fallback={<LoadingSpinner />}>
