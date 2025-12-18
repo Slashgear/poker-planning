@@ -296,7 +296,12 @@ export default function Room() {
           </p>
 
           <form onSubmit={handleJoin} className="space-y-4">
+            <label htmlFor="member-name" className="sr-only">
+              Your name
+            </label>
             <input
+              id="member-name"
+              name="firstName"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -304,6 +309,7 @@ export default function Room() {
               className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
               autoFocus
               maxLength={30}
+              required
             />
 
             {joinError && <p className="text-red-400 text-sm">{joinError}</p>}
@@ -443,7 +449,7 @@ export default function Room() {
                     isSelected || (selectedValue === null && index === 0);
 
                   return (
-                    <li key={value} className="list-none">
+                    <li key={value} role="none" className="list-none">
                       <button
                         role="radio"
                         aria-checked={isSelected}
