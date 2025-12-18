@@ -13,27 +13,27 @@ Collaborative poker planning web application for agile team estimation using the
 ### Homepage
 Create a new room to start a planning session.
 
-![Homepage](docs/screenshots/01-homepage.png)
+![Homepage](public/01-homepage.png)
 
 ### Join Room
 Share the room code with your team members.
 
-![Join Room](docs/screenshots/02-join-room.png)
+![Join Room](public/02-join-room.png)
 
 ### Voting Session
 Team members vote anonymously using Fibonacci values.
 
-![Voting Session](docs/screenshots/03-voting-session.png)
+![Voting Session](public/03-voting-session.png)
 
 ### Results
 View vote distribution and average when revealed.
 
-![Results](docs/screenshots/04-results.png)
+![Results](public/04-results.png)
 
 ### Consensus
 Celebrate when everyone agrees!
 
-![Consensus](docs/screenshots/05-consensus.png)
+![Consensus](public/05-consensus.png)
 
 </details>
 
