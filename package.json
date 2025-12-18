@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "dev:server": "tsx server/index.ts",
+    "prebuild": "tsx scripts/generate-sw.ts",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "oxlint src server tests",
@@ -27,6 +28,7 @@
   "license": "ISC",
   "devDependencies": {
     "@axe-core/react": "^4.11.0",
+    "@lhci/cli": "^0.15.1",
     "@playwright/test": "1.57.0",
     "@tailwindcss/postcss": "4.1.18",
     "@testing-library/react": "16.3.1",

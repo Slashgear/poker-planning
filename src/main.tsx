@@ -27,6 +27,20 @@ if (import.meta.env.DEV) {
     });
 }
 
+// Register service worker in production
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker
+      .register("/sw.js")
+      .then((registration) => {
+        console.log("SW registered:", registration);
+      })
+      .catch((error) => {
+        console.error("SW registration failed:", error);
+      });
+  });
+}
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <Suspense fallback={<LoadingSpinner />}>

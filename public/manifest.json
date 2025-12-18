@@ -1,0 +1,11 @@
+{
+  "name": "Poker Planning",
+  "short_name": "Poker Planning",
+  "description": "Free online poker planning tool for agile teams. Estimate tasks collaboratively using Fibonacci sequence with real-time voting and instant results.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#7c3aed",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "business"]
+}
