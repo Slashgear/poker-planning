@@ -11,6 +11,9 @@ This is a poker planning web application for agile task estimation using the Fib
 - **Backend**: Hono server with Server-Sent Events
 - **Storage**: Redis for room state persistence
 - **State**: Session cookies (httpOnly, 2h)
+- **PWA**: Service Worker with versioned cache, manifest.json
+- **Accessibility**: @axe-core/react for dev auditing
+- **Quality**: Lighthouse CI for performance/accessibility monitoring
 
 ## Key Architecture
 
@@ -57,11 +60,74 @@ pnpm format                                  # Check formatting with oxfmt
 docker-compose up -d --build  # Build and run full stack (port 3001)
 ```
 
+## PWA & Build System
+
+### Service Worker
+- Generated automatically via `scripts/generate-sw.ts` during `prebuild`
+- Cache name includes package version (e.g., `poker-planning-v2.11.0`)
+- Old caches automatically cleaned up on new deployments
+- Strategies:
+  - **Network-first** for API calls (always fresh data)
+  - **Cache-first** for static assets (better performance)
+- Only registers in production builds (`import.meta.env.PROD`)
+
+### Progressive Web App
+- `public/manifest.json` - PWA configuration
+- Screenshots located in `public/*.png` for app store
+- Theme color: `#7c3aed` (purple)
+- Installable on mobile and desktop
+
+### Build Process
+1. `prebuild` - Generate service worker with current version
+2. `tsc` - TypeScript compilation
+3. `vite build` - Frontend bundling
+
+## Accessibility
+
+### Development Tools
+- **@axe-core/react** runs automatically in dev mode
+- Reports accessibility violations in browser console
+- Checks against WCAG guidelines
+
+### Accessibility Features
+- Form labels (visually hidden with `sr-only` class when needed)
+- ARIA attributes on interactive elements
+- Keyboard navigation (arrow keys, tab, etc.)
+- Skip links for screen readers
+- Live regions for status announcements
+
+### Lighthouse CI
+- Runs on all pull requests via GitHub Actions
+- Enforces minimum scores:
+  - Performance: 90%
+  - Accessibility: 90%
+  - Best Practices: 90%
+  - SEO: 90%
+  - PWA: 80% (warning only)
+- Configuration in `lighthouserc.js`
+- Results uploaded as GitHub Actions artifacts
+
+## Social Media & SEO
+
+### Meta Tags
+- Open Graph tags for Facebook/LinkedIn sharing
+- Twitter Card meta tags
+- Image: `public/og-image.png` (results screenshot)
+- Comprehensive keywords and description
+
+### Screenshots
+All screenshots (1280x720) stored in `public/`:
+- `01-homepage.png`
+- `02-join-room.png`
+- `03-voting-session.png`
+- `04-results.png` (also used as og-image.png)
+- `05-consensus.png`
+
 ## Conventions
 
 - **Commits**: Use Conventional Commits format (feat:, fix:, chore:, etc.)
 - **Pre-commit**: Husky runs format, lint, and typecheck before each commit
-- **Releases**: When creating a release, update version in Home.tsx and Room.tsx footer
+- **Releases**: When creating a release, update version in package.json (service worker will auto-update)
 
 ## Important Patterns
 

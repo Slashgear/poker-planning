@@ -39,6 +39,7 @@ Celebrate when everyone agrees!
 
 ## Features
 
+### Core Functionality
 - **Dynamic rooms** with shareable 6-character codes
 - **Real-time synchronization** with SSE (Server-Sent Events)
 - **Anonymous votes** until collective reveal
@@ -49,6 +50,19 @@ Celebrate when everyone agrees!
 - **Session persistence** via httpOnly cookies (2 hours)
 - **Auto-cleanup** of inactive members (5 minutes)
 - **Member management** - any member can remove others
+
+### Progressive Web App (PWA)
+- **Installable** on mobile and desktop devices
+- **Offline support** with intelligent service worker caching
+- **Versioned cache** that auto-updates on new deployments
+- **App-like experience** with standalone display mode
+
+### Accessibility & Quality
+- **WCAG compliant** with proper ARIA attributes and semantic HTML
+- **Keyboard navigation** throughout the entire application
+- **Screen reader support** with live regions and announcements
+- **Lighthouse CI** monitoring for performance and accessibility
+- **axe-core** automated accessibility testing in development
 
 ## Tech Stack
 
@@ -263,6 +277,83 @@ pnpm run test:load:stress
 - Vote operations: < 200ms
 
 See [tests/load/README.md](tests/load/README.md) for detailed documentation.
+
+### Lighthouse CI
+
+Lighthouse CI runs automatically on all pull requests to ensure quality standards.
+
+**Local Lighthouse audit:**
+```bash
+# Build the app first
+pnpm run build
+
+# Run Lighthouse CI
+pnpm exec lhci autorun
+```
+
+**Quality thresholds enforced:**
+- Performance: ≥ 90%
+- Accessibility: ≥ 90%
+- Best Practices: ≥ 90%
+- SEO: ≥ 90%
+- PWA: ≥ 80% (warning only)
+
+Results are uploaded as GitHub Actions artifacts on pull requests.
+
+## Progressive Web App (PWA)
+
+The application is installable as a Progressive Web App on both mobile and desktop.
+
+### Installation
+
+**Desktop (Chrome/Edge):**
+1. Visit the app URL
+2. Look for the install icon in the address bar
+3. Click "Install"
+
+**Mobile (iOS/Android):**
+1. Visit the app URL in Safari/Chrome
+2. Tap the share button
+3. Select "Add to Home Screen"
+
+### Service Worker
+
+The service worker is automatically generated with the package version:
+- Cache name: `poker-planning-v{version}`
+- Generated via `pnpm run prebuild` (runs before `build`)
+- Old caches automatically cleaned up on new deployments
+
+**Cache strategies:**
+- **Network-first** for API calls (fresh data)
+- **Cache-first** for static assets (performance)
+
+### Offline Support
+
+When offline, the app can:
+- Display cached pages and assets
+- Show previously loaded room data
+- Gracefully handle network errors
+
+## Accessibility
+
+The application follows WCAG 2.1 Level AA guidelines.
+
+### Development Tools
+
+**axe-core** runs automatically in development mode:
+```bash
+pnpm run dev
+# Open browser console to see accessibility violations
+```
+
+### Accessibility Features
+
+- **Keyboard navigation**: Full keyboard support with arrow keys, Tab, Enter
+- **Screen readers**: ARIA labels, live regions, and semantic HTML
+- **Skip links**: Jump to main content and voting section
+- **Form labels**: All inputs have associated labels (some visually hidden)
+- **Focus management**: Clear focus indicators and logical tab order
+- **Color contrast**: All text meets WCAG AA contrast ratios
 
 ## Linting & Formatting
 
