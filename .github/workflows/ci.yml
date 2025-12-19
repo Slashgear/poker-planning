@@ -438,7 +438,7 @@ jobs:
   # Job: Lighthouse CI audit
   lighthouse:
     runs-on: ubuntu-latest
-    needs: [build]
+    needs: [install, build]
     if: github.event_name == 'pull_request'
     steps:
       - uses: actions/checkout@v6
