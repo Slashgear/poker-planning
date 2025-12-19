@@ -18,10 +18,10 @@ export default {
                 "categories:pwa": ["warn", {minScore: 0.8}],
 
                 // Ignore some rules
-                "network-dependency-tree-insight": "off",
-                "unused-javascript": "off",
-                "render-blocking-insight": "off",
-                "render-blocking-resources": "off"
+                "network-dependency-tree-insight": ["off",{}],
+                "unused-javascript": ["off",{}],
+                "render-blocking-insight": ["off",{}],
+                "render-blocking-resources": ["off",{}],
             },
         },
         upload: {
