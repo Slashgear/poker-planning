@@ -7,6 +7,12 @@ export default {
             numberOfRuns: 3,
             settings: {
                 preset: "desktop",
+                skipAudits: [
+                    "network-dependency-tree-insight",
+                    "unused-javascript",
+                    "render-blocking-insight",
+                    "render-blocking-resources"
+                ],
             },
         },
         assert: {
@@ -16,12 +22,6 @@ export default {
                 "categories:best-practices": ["error", {minScore: 0.9}],
                 "categories:seo": ["error", {minScore: 0.9}],
                 "categories:pwa": ["warn", {minScore: 0.8}],
-
-                // Ignore some rules
-                "network-dependency-tree-insight": ["off",{}],
-                "unused-javascript": ["off",{}],
-                "render-blocking-insight": ["off",{}],
-                "render-blocking-resources": ["off",{}],
             },
         },
         upload: {
