@@ -61,7 +61,6 @@ Celebrate when everyone agrees!
 - **WCAG compliant** with proper ARIA attributes and semantic HTML
 - **Keyboard navigation** throughout the entire application
 - **Screen reader support** with live regions and announcements
-- **Lighthouse CI** monitoring for performance and accessibility
 - **axe-core** automated accessibility testing in development
 
 ## Tech Stack
@@ -277,28 +276,6 @@ pnpm run test:load:stress
 - Vote operations: < 200ms
 
 See [tests/load/README.md](tests/load/README.md) for detailed documentation.
-
-### Lighthouse CI
-
-Lighthouse CI runs automatically on all pull requests to ensure quality standards.
-
-**Local Lighthouse audit:**
-```bash
-# Build the app first
-pnpm run build
-
-# Run Lighthouse CI
-pnpm exec lhci autorun
-```
-
-**Quality thresholds enforced:**
-- Performance: ≥ 90%
-- Accessibility: ≥ 90%
-- Best Practices: ≥ 90%
-- SEO: ≥ 90%
-- PWA: ≥ 80% (warning only)
-
-Results are uploaded as GitHub Actions artifacts on pull requests.
 
 ## Progressive Web App (PWA)
 

@@ -13,7 +13,6 @@ This is a poker planning web application for agile task estimation using the Fib
 - **State**: Session cookies (httpOnly, 2h)
 - **PWA**: Service Worker with versioned cache, manifest.json
 - **Accessibility**: @axe-core/react for dev auditing
-- **Quality**: Lighthouse CI for performance/accessibility monitoring
 
 ## Key Architecture
 
@@ -95,17 +94,6 @@ docker-compose up -d --build  # Build and run full stack (port 3001)
 - Keyboard navigation (arrow keys, tab, etc.)
 - Skip links for screen readers
 - Live regions for status announcements
-
-### Lighthouse CI
-- Runs on all pull requests via GitHub Actions
-- Enforces minimum scores:
-  - Performance: 90%
-  - Accessibility: 90%
-  - Best Practices: 90%
-  - SEO: 90%
-  - PWA: 80% (warning only)
-- Configuration in `lighthouserc.js`
-- Results uploaded as GitHub Actions artifacts
 
 ## Social Media & SEO
 
