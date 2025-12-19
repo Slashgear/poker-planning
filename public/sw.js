@@ -1,4 +1,4 @@
-const CACHE_NAME = "poker-planning-v2.11.0";
+const CACHE_NAME = "poker-planning-v2.12.0";
 const STATIC_ASSETS = [
   "/",
   "/index.html",

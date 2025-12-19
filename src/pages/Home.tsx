@@ -54,7 +54,7 @@ export default function Home() {
             GitHub
           </a>
           <span className="mx-2">·</span>
-          <span>v2.11.0</span>
+          <span>v2.12.0</span>
         </footer>
       </div>
     </main>

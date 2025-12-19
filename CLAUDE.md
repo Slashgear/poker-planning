@@ -63,7 +63,7 @@ docker-compose up -d --build  # Build and run full stack (port 3001)
 
 ### Service Worker
 - Generated automatically via `scripts/generate-sw.ts` during `prebuild`
-- Cache name includes package version (e.g., `poker-planning-v2.11.0`)
+- Cache name includes package version (e.g., `poker-planning-v2.12.0`)
 - Old caches automatically cleaned up on new deployments
 - Strategies:
   - **Network-first** for API calls (always fresh data)
