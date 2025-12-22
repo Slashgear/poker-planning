@@ -54,7 +54,7 @@
     "@hono/swagger-ui": "0.5.2",
     "@hono/zod-openapi": "1.1.5",
     "@tanstack/react-query": "5.90.12",
-    "@tanstack/react-router": "1.141.2",
+    "@tanstack/react-router": "1.142.8",
     "canvas-confetti": "1.9.4",
     "hono": "4.11.1",
     "ioredis": "5.8.2",
