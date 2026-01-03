@@ -40,8 +40,8 @@
     "happy-dom": "20.0.11",
     "husky": "9.1.7",
     "ioredis-mock": "8.13.1",
-    "oxfmt": "0.20.0",
-    "oxlint": "1.35.0",
+    "oxfmt": "0.21.0",
+    "oxlint": "1.36.0",
     "postcss": "8.5.6",
     "tailwindcss": "4.1.18",
     "typescript": "5.9.3",
@@ -60,6 +60,6 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "tsx": "4.21.0",
-    "zod": "4.2.1"
+    "zod": "4.3.4"
   }
 }
