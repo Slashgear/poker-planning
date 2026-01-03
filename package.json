@@ -23,8 +23,8 @@
     "screenshots": "tsx scripts/generate-screenshots.ts"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Antoine Caron (@Slashgear)",
+  "license": "MIT",
   "devDependencies": {
     "@axe-core/react": "4.11.0",
     "@playwright/test": "1.57.0",
