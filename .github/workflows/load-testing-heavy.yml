@@ -1,0 +1,152 @@
+# Heavy Load Testing Workflow
+# Runs stress, realistic, and SSE endurance tests
+# Triggered manually, nightly, or on releases
+
+name: Heavy Load Testing
+
+on:
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Which test to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - stress
+          - realistic
+          - sse
+
+  # Nightly at 2 AM UTC
+  schedule:
+    - cron: '0 2 * * *'
+
+  # On releases
+  push:
+    tags:
+      - 'v*'
+
+env:
+  PNPM_VERSION: 10.17.0
+  NODE_VERSION: 22
+
+jobs:
+  heavy-load-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    services:
+      redis:
+        image: redis:alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    env:
+      REDIS_URL: redis://localhost:6379
+      API_URL: http://localhost:3001
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install k6
+        run: |
+          sudo gpg -k
+          sudo gpg --no-default-keyring --keyring /usr/share/keyrings/k6-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C5AD17C747E3415A3642D57D77C6C491D6AC1D69
+          echo "deb [signed-by=/usr/share/keyrings/k6-archive-keyring.gpg] https://dl.k6.io/deb stable main" | sudo tee /etc/apt/sources.list.d/k6.list
+          sudo apt-get update
+          sudo apt-get install k6
+
+      - name: Start application server
+        run: |
+          pnpm run dev:server &
+          echo $! > server.pid
+          # Wait for server to be ready
+          timeout 30 bash -c 'until curl -f http://localhost:3001/api/health; do sleep 1; done'
+
+      # Stress Test (1000 users, ~17 min)
+      - name: Run stress test
+        if: inputs.test_type == 'stress' || inputs.test_type == 'all' || github.event_name != 'workflow_dispatch'
+        run: |
+          echo "## 🔥 Stress Test (1000 users)" >> $GITHUB_STEP_SUMMARY
+          echo "Starting stress test..." >> $GITHUB_STEP_SUMMARY
+          pnpm run test:load:stress | tee stress-test-output.txt
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -20 stress-test-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      # Realistic Sessions Test (500 users, 50-100 rooms, ~18 min)
+      - name: Run realistic sessions test
+        if: inputs.test_type == 'realistic' || inputs.test_type == 'all' || github.event_name != 'workflow_dispatch'
+        run: |
+          echo "## 🎯 Realistic Sessions Test" >> $GITHUB_STEP_SUMMARY
+          echo "Starting realistic sessions test..." >> $GITHUB_STEP_SUMMARY
+          pnpm run test:load:realistic | tee realistic-test-output.txt
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -20 realistic-test-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      # SSE Endurance Test (1000 connections, ~20 min)
+      - name: Run SSE endurance test
+        if: inputs.test_type == 'sse' || inputs.test_type == 'all' || github.event_name != 'workflow_dispatch'
+        run: |
+          echo "## ⚡ SSE Endurance Test" >> $GITHUB_STEP_SUMMARY
+          echo "Starting SSE endurance test..." >> $GITHUB_STEP_SUMMARY
+          pnpm run test:load:sse | tee sse-test-output.txt
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Results" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -20 sse-test-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      - name: Stop application server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then
+            kill $(cat server.pid) || true
+            rm server.pid
+          fi
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: heavy-load-test-results
+          path: |
+            *-test-output.txt
+            tests/load/results/
+          retention-days: 30
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "## 📊 Test Completion" >> $GITHUB_STEP_SUMMARY
+          echo "All heavy load tests completed!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📋 [Download detailed results](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
