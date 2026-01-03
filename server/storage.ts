@@ -43,6 +43,8 @@ export interface GlobalStats {
 const ROOM_TTL = 2 * 60 * 60; // 2 hours in seconds
 const ROOM_KEY_PREFIX = "room:";
 const EMPTY_ROOM_GRACE_PERIOD = 5 * 60 * 1000; // 5 minutes - grace period before deleting empty rooms
+const STATS_CACHE_TTL = 30; // 30 seconds - cache active stats to reduce Redis load
+const STATS_CACHE_KEY = "stats:active:cache";
 
 // Serialize room to JSON (convert Map to array)
 function serializeRoom(room: Room): string {
@@ -253,6 +255,17 @@ export class RoomStorage {
 
   async getStats(): Promise<GlobalStats> {
     try {
+      // Try to get cached stats first (for active stats only)
+      const cached = await this.redis.get(STATS_CACHE_KEY);
+      if (cached) {
+        const cachedData = JSON.parse(cached) as GlobalStats;
+        console.log("[STATS_CACHE_HIT] Returning cached stats");
+        return cachedData;
+      }
+
+      // Cache miss - calculate stats from scratch
+      console.log("[STATS_CACHE_MISS] Calculating fresh stats");
+
       // Get cumulative stats from Redis counters
       const [totalRooms, totalParticipants, totalVotes] = await Promise.all([
         this.redis.get("stats:rooms:total"),
@@ -282,7 +295,7 @@ export class RoomStorage {
         }
       }
 
-      return {
+      const stats: GlobalStats = {
         cumulative: {
           rooms: parseInt(totalRooms || "0", 10),
           participants: parseInt(totalParticipants || "0", 10),
@@ -294,6 +307,11 @@ export class RoomStorage {
           votes: activeVotes,
         },
       };
+
+      // Cache the calculated stats with TTL
+      await this.redis.setex(STATS_CACHE_KEY, STATS_CACHE_TTL, JSON.stringify(stats));
+
+      return stats;
     } catch (error) {
       console.error("[STATS_FETCH_ERROR] Failed to fetch stats:", error);
       // Return zeros on error
