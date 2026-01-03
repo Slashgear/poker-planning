@@ -1,6 +1,6 @@
 {
   "name": "poc-er-planning",
-  "version": "2.13.0",
+  "version": "2.14.0",
   "type": "module",
   "description": "- React app with tailwind shadcn tanstack - With a simple configuration file to define team composition - Database (SQlite) - Use to estimate task for a team based on fibonacci suite",
   "main": "index.js",
