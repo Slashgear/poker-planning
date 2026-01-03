@@ -53,8 +53,6 @@ Celebrate when everyone agrees!
 
 ### Progressive Web App (PWA)
 - **Installable** on mobile and desktop devices
-- **Offline support** with intelligent service worker caching
-- **Versioned cache** that auto-updates on new deployments
 - **App-like experience** with standalone display mode
 
 ### Accessibility & Quality
@@ -293,24 +291,6 @@ The application is installable as a Progressive Web App on both mobile and deskt
 2. Tap the share button
 3. Select "Add to Home Screen"
 
-### Service Worker
-
-The service worker is automatically generated with the package version:
-- Cache name: `poker-planning-v{version}`
-- Generated via `pnpm run prebuild` (runs before `build`)
-- Old caches automatically cleaned up on new deployments
-
-**Cache strategies:**
-- **Network-first** for API calls (fresh data)
-- **Cache-first** for static assets (performance)
-
-### Offline Support
-
-When offline, the app can:
-- Display cached pages and assets
-- Show previously loaded room data
-- Gracefully handle network errors
-
 ## Accessibility
 
 The application follows WCAG 2.1 Level AA guidelines.
@@ -467,4 +447,24 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for contribution guidelines.
 
 ## License
 
-ISC
+MIT License
+
+Copyright (c) 2026 Antoine Caron (@Slashgear)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
