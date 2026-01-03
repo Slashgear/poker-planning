@@ -137,13 +137,34 @@ export class RoomStorage {
     return exists === 1;
   }
 
+  /**
+   * Scan Redis keys matching a pattern using SCAN (non-blocking).
+   * Uses SCAN instead of KEYS to avoid blocking Redis at scale.
+   * @param pattern - Redis key pattern (e.g., "room:*")
+   * @param count - Hint for number of keys per iteration (default: 100)
+   * @returns Array of matching keys
+   */
+  private async scanKeys(pattern: string, count = 100): Promise<string[]> {
+    const keys: string[] = [];
+    let cursor = "0";
+
+    do {
+      const [newCursor, batch] = await this.redis.scan(cursor, "MATCH", pattern, "COUNT", count);
+
+      keys.push(...batch);
+      cursor = newCursor;
+    } while (cursor !== "0");
+
+    return keys;
+  }
+
   // Cleanup inactive members across all rooms
   async cleanupInactiveMembers(inactivityTimeout: number): Promise<void> {
     const now = Date.now();
     const pattern = `${ROOM_KEY_PREFIX}*`;
 
-    // Get all room keys
-    const keys = await this.redis.keys(pattern);
+    // Get all room keys using SCAN (non-blocking)
+    const keys = await this.scanKeys(pattern);
 
     console.log(`[CLEANUP_START] Starting cleanup cycle: ${keys.length} active room(s)`);
 
@@ -239,9 +260,9 @@ export class RoomStorage {
         this.redis.get("stats:votes:total"),
       ]);
 
-      // Calculate active stats by scanning all rooms
+      // Calculate active stats by scanning all rooms using SCAN (non-blocking)
       const pattern = `${ROOM_KEY_PREFIX}*`;
-      const keys = await this.redis.keys(pattern);
+      const keys = await this.scanKeys(pattern);
 
       let activeParticipants = 0;
       let activeVotes = 0;

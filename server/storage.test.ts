@@ -258,5 +258,103 @@ describe("RoomStorage", () => {
       expect(room1Updated).not.toBeNull();
       expect(room2Updated).toBeNull();
     });
+
+    it("handles large number of rooms efficiently using SCAN", async () => {
+      const now = Date.now();
+      const roomCount = 150; // More than default SCAN count (100)
+
+      // Create many rooms with active members
+      for (let i = 0; i < roomCount; i++) {
+        const code = `ROOM${String(i).padStart(3, "0")}`;
+        const room = await storage.createRoom(code);
+        room.members.set(`user${i}`, {
+          id: `user${i}`,
+          name: `User ${i}`,
+          vote: null,
+          lastActivity: now,
+        });
+        await storage.updateRoom(room);
+      }
+
+      // Run cleanup - should process all rooms without blocking
+      await storage.cleanupInactiveMembers(5 * 60 * 1000);
+
+      // Verify all rooms still exist (all members are active)
+      for (let i = 0; i < roomCount; i++) {
+        const code = `ROOM${String(i).padStart(3, "0")}`;
+        const room = await storage.getRoom(code);
+        expect(room).not.toBeNull();
+        expect(room?.members.size).toBe(1);
+      }
+    });
+  });
+
+  describe("getStats", () => {
+    it("calculates active stats correctly using SCAN", async () => {
+      const now = Date.now();
+
+      // Create multiple rooms with different states
+      const room1 = await storage.createRoom("ROOM001");
+      room1.members.set("user1", {
+        id: "user1",
+        name: "User 1",
+        vote: 5,
+        lastActivity: now,
+      });
+      room1.members.set("user2", {
+        id: "user2",
+        name: "User 2",
+        vote: 8,
+        lastActivity: now,
+      });
+      await storage.updateRoom(room1);
+
+      const room2 = await storage.createRoom("ROOM002");
+      room2.members.set("user3", {
+        id: "user3",
+        name: "User 3",
+        vote: null,
+        lastActivity: now,
+      });
+      await storage.updateRoom(room2);
+
+      const stats = await storage.getStats();
+
+      expect(stats.active.rooms).toBe(2);
+      expect(stats.active.participants).toBe(3);
+      expect(stats.active.votes).toBe(2);
+    });
+
+    it("handles large number of rooms efficiently using SCAN", async () => {
+      const now = Date.now();
+      const roomCount = 120; // More than default SCAN count (100)
+
+      // Create many rooms
+      for (let i = 0; i < roomCount; i++) {
+        const code = `ROOM${String(i).padStart(3, "0")}`;
+        const room = await storage.createRoom(code);
+        room.members.set(`user${i}`, {
+          id: `user${i}`,
+          name: `User ${i}`,
+          vote: i % 3 === 0 ? 5 : null, // Every 3rd user votes
+          lastActivity: now,
+        });
+        await storage.updateRoom(room);
+      }
+
+      const stats = await storage.getStats();
+
+      expect(stats.active.rooms).toBe(roomCount);
+      expect(stats.active.participants).toBe(roomCount);
+      expect(stats.active.votes).toBe(Math.floor(roomCount / 3));
+    });
+
+    it("returns zeros on empty database", async () => {
+      const stats = await storage.getStats();
+
+      expect(stats.active.rooms).toBe(0);
+      expect(stats.active.participants).toBe(0);
+      expect(stats.active.votes).toBe(0);
+    });
   });
 });

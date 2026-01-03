@@ -23,6 +23,13 @@ This is a poker planning web application for agile task estimation using the Fib
 - Inactive members removed after 5 minutes
 - Empty rooms automatically cleaned up
 
+### Performance Optimizations
+- **Redis SCAN vs KEYS**: Uses non-blocking `SCAN` instead of `KEYS` for iterating rooms
+  - Prevents blocking Redis during cleanup and stats operations
+  - Cleanup runs every 60s without impacting other operations
+  - Safe for production at scale (tested with 150+ concurrent rooms)
+  - Located in `server/storage.ts` (`scanKeys()` method)
+
 ### API Structure
 - `POST /api/rooms` - Create room
 - `POST /api/rooms/:code/join` - Join with name
