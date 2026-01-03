@@ -27,18 +27,28 @@ if (import.meta.env.DEV) {
     });
 }
 
-// Register service worker in production
-if (import.meta.env.PROD && "serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register("/sw.js")
-      .then((registration) => {
-        console.log("SW registered:", registration);
-      })
-      .catch((error) => {
-        console.error("SW registration failed:", error);
+// Unregister any existing service workers and clear caches
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (const registration of registrations) {
+      registration.unregister().then(() => {
+        console.log("Service worker unregistered");
       });
+    }
   });
+
+  // Clear all caches created by the service worker
+  if ("caches" in window) {
+    caches.keys().then((cacheNames) => {
+      cacheNames.forEach((cacheName) => {
+        if (cacheName.startsWith("poker-planning-")) {
+          caches.delete(cacheName).then(() => {
+            console.log("Cache deleted:", cacheName);
+          });
+        }
+      });
+    });
+  }
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

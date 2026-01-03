@@ -11,7 +11,7 @@ This is a poker planning web application for agile task estimation using the Fib
 - **Backend**: Hono server with Server-Sent Events
 - **Storage**: Redis for room state persistence
 - **State**: Session cookies (httpOnly, 2h)
-- **PWA**: Service Worker with versioned cache, manifest.json
+- **PWA**: manifest.json for installable app
 - **Accessibility**: @axe-core/react for dev auditing
 
 ## Key Architecture
@@ -61,15 +61,6 @@ docker-compose up -d --build  # Build and run full stack (port 3001)
 
 ## PWA & Build System
 
-### Service Worker
-- Generated automatically via `scripts/generate-sw.ts` during `prebuild`
-- Cache name includes package version (e.g., `poker-planning-v2.12.0`)
-- Old caches automatically cleaned up on new deployments
-- Strategies:
-  - **Network-first** for API calls (always fresh data)
-  - **Cache-first** for static assets (better performance)
-- Only registers in production builds (`import.meta.env.PROD`)
-
 ### Progressive Web App
 - `public/manifest.json` - PWA configuration
 - Screenshots located in `public/*.png` for app store
@@ -77,9 +68,8 @@ docker-compose up -d --build  # Build and run full stack (port 3001)
 - Installable on mobile and desktop
 
 ### Build Process
-1. `prebuild` - Generate service worker with current version
-2. `tsc` - TypeScript compilation
-3. `vite build` - Frontend bundling
+1. `tsc` - TypeScript compilation
+2. `vite build` - Frontend bundling
 
 ## Accessibility
 
@@ -115,7 +105,7 @@ All screenshots (1280x720) stored in `public/`:
 
 - **Commits**: Use Conventional Commits format (feat:, fix:, chore:, etc.)
 - **Pre-commit**: Husky runs format, lint, and typecheck before each commit
-- **Releases**: When creating a release, update version in package.json (service worker will auto-update)
+- **Releases**: When creating a release, update version in package.json
 
 ## Important Patterns
 
