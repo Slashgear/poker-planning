@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { createRoom } from "../hooks/useRoom";
+import { APP_VERSION } from "../config";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -54,7 +55,7 @@ export default function Home() {
             GitHub
           </a>
           <span className="mx-2">·</span>
-          <span>v2.13.0</span>
+          <span>v{APP_VERSION}</span>
         </footer>
       </div>
     </main>

@@ -3,6 +3,7 @@ import { useParams } from "@tanstack/react-router";
 import { useRoom } from "../hooks/useRoom";
 import { useConfetti } from "../hooks/useConfetti";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
+import { APP_VERSION } from "../config";
 
 const FIBONACCI_VALUES = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, "?", "☕"];
 
@@ -628,7 +629,7 @@ export default function Room() {
             <span className="mx-2" aria-hidden="true">
               ·
             </span>
-            <span>v2.13.0</span>
+            <span>v{APP_VERSION}</span>
           </footer>
         </div>
       </main>
