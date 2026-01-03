@@ -253,25 +253,46 @@ Load testing ensures the application can handle expected traffic and identifies 
 
 **Prerequisites**: Install [k6](https://k6.io/docs/get-started/installation/)
 
+#### Standard Tests (runs in CI)
+
 ```bash
 # Quick validation (1 user, 1 minute)
 pnpm run test:load:smoke
 
-# Realistic load test (10-20 users)
+# Basic workflow (20 concurrent users, 3.5min)
 pnpm run test:load:basic
 
 # Spike test (sudden surge to 100 users)
 pnpm run test:load:spike
+```
 
-# Stress test (gradual ramp to 200 users)
+#### Heavy Tests (manual/nightly/releases)
+
+These production-ready tests run in a dedicated GitHub Actions workflow to avoid impacting CI performance:
+
+```bash
+# Stress test (up to 1000 concurrent users, 17min)
 pnpm run test:load:stress
+
+# Realistic sessions (500 users across 50-100 rooms, 18min)
+pnpm run test:load:realistic
+
+# SSE endurance (1000 concurrent connections for 10+ minutes, 20min)
+pnpm run test:load:sse
+
+# Run all heavy tests (~55min total)
+pnpm run test:load:all
 ```
 
 **Performance Thresholds**:
-- Error rate: < 1% (normal load)
-- 95% of requests: < 500ms
-- Room operations: < 300ms
-- Vote operations: < 200ms
+- **Basic/Spike**: <1% error rate, p95 < 500ms
+- **Stress**: <5% error rate at 1000 users, p95 < 2s, p99 < 5s
+- **Realistic**: <2% error rate, >30% consensus rate, p95 < 1s
+- **SSE**: <5% error rate, >800 active connections maintained
+
+**GitHub Actions Workflows**:
+- Standard tests run on all PRs and pushes
+- Heavy tests run nightly at 2 AM UTC, manually, or on releases
 
 See [tests/load/README.md](tests/load/README.md) for detailed documentation.
 
