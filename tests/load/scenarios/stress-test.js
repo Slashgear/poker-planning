@@ -2,7 +2,7 @@
  * k6 Stress Test: Push System to Limits
  *
  * This test gradually increases load to find the breaking point
- * of the application.
+ * of the application. Updated to test up to 1000 concurrent users.
  */
 
 import http from "k6/http";
@@ -14,17 +14,19 @@ const successfulRequests = new Counter("successful_requests");
 
 export const options = {
   stages: [
-    { duration: "2m", target: 50 }, // Ramp up to 50 users
     { duration: "2m", target: 100 }, // Ramp up to 100 users
-    { duration: "2m", target: 150 }, // Ramp up to 150 users
-    { duration: "2m", target: 200 }, // Ramp up to 200 users
-    { duration: "5m", target: 200 }, // Stay at 200 for 5 minutes
+    { duration: "2m", target: 250 }, // Ramp up to 250 users
+    { duration: "2m", target: 500 }, // Ramp up to 500 users
+    { duration: "2m", target: 750 }, // Ramp up to 750 users
+    { duration: "2m", target: 1000 }, // Ramp up to 1000 users
+    { duration: "5m", target: 1000 }, // Stay at 1000 for 5 minutes
     { duration: "2m", target: 0 }, // Ramp down
   ],
   thresholds: {
-    errors: ["rate<0.1"], // Allow up to 10% errors during stress
-    http_req_duration: ["p(95)<2000"], // 95% under 2s during stress
-    http_req_failed: ["rate<0.1"], // Less than 10% failed requests
+    errors: ["rate<0.05"], // Allow up to 5% errors during stress (stricter)
+    http_req_duration: ["p(95)<2000", "p(99)<5000"], // 95% under 2s, 99% under 5s
+    http_req_failed: ["rate<0.05"], // Less than 5% failed requests
+    successful_requests: ["count>5000"], // At least 5000 successful requests
   },
 };
 

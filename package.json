@@ -20,6 +20,9 @@
     "test:load:basic": "k6 run tests/load/scenarios/basic-workflow.js",
     "test:load:spike": "k6 run tests/load/scenarios/spike-test.js",
     "test:load:stress": "k6 run tests/load/scenarios/stress-test.js",
+    "test:load:realistic": "k6 run tests/load/scenarios/realistic-sessions-test.js",
+    "test:load:sse": "k6 run tests/load/scenarios/sse-endurance-test.js",
+    "test:load:all": "pnpm test:load:basic && pnpm test:load:spike && pnpm test:load:stress",
     "screenshots": "tsx scripts/generate-screenshots.ts"
   },
   "keywords": [],

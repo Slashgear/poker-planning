@@ -260,6 +260,17 @@ jobs:
         env:
           API_URL: http://localhost:3001
 
+      - name: Run realistic sessions test
+        if: github.ref == 'refs/heads/main'
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 20
+          max_attempts: 2
+          retry_wait_seconds: 10
+          command: pnpm run test:load:realistic
+        env:
+          API_URL: http://localhost:3001
+
       - name: Stop application server
         if: always()
         run: |

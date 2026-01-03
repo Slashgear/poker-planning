@@ -59,8 +59,17 @@ pnpm run dev                                          # Terminal 2 - Frontend (p
 
 # Testing (requires Redis)
 REDIS_URL=redis://localhost:6379 pnpm test  # Run Playwright tests
+pnpm test:unit                               # Run Vitest unit tests
 pnpm lint                                    # Run oxlint
 pnpm format                                  # Check formatting with oxfmt
+
+# Load Testing (requires Redis + running server)
+pnpm test:load:basic      # Basic workflow (20 users, 3.5min)
+pnpm test:load:spike      # Spike test (100 users spike)
+pnpm test:load:stress     # Stress test (up to 1000 users, 17min)
+pnpm test:load:realistic  # Realistic sessions (500 users, 50-100 rooms, 18min)
+pnpm test:load:sse        # SSE endurance (1000 connections, 20min)
+pnpm test:load:all        # Run all standard tests
 
 # Docker
 docker-compose up -d --build  # Build and run full stack (port 3001)
