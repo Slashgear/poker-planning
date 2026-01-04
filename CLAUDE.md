@@ -71,6 +71,9 @@ pnpm test:load:realistic  # Realistic sessions (500 users, 50-100 rooms, 18min)
 pnpm test:load:sse        # SSE endurance (1000 connections, 20min)
 pnpm test:load:all        # Run all standard tests
 
+# Bundle Analysis
+pnpm build:analyze        # Build with bundle size visualization (opens dist/stats.html)
+
 # Docker
 docker-compose up -d --build  # Build and run full stack (port 3001)
 ```
@@ -86,6 +89,17 @@ docker-compose up -d --build  # Build and run full stack (port 3001)
 ### Build Process
 1. `tsc` - TypeScript compilation
 2. `vite build` - Frontend bundling
+
+### Bundle Analysis
+- Uses `rollup-plugin-visualizer` for bundle size analysis
+- Run `pnpm build:analyze` to generate interactive visualization
+- Output: `dist/stats.html` with treemap view
+- Shows gzip and brotli compressed sizes
+- Helps identify optimization opportunities
+- Current chunks:
+  - `react-vendor`: React + React DOM
+  - `router-vendor`: TanStack Router
+  - `query-vendor`: TanStack Query
 
 ## Accessibility
 

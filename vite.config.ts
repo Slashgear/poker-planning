@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { visualizer } from "rollup-plugin-visualizer";
 
 const ReactCompilerConfig = {
   /* ... */
@@ -13,6 +14,17 @@ export default defineConfig({
         plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]],
       },
     }),
+    ...(process.env.ANALYZE
+      ? [
+          visualizer({
+            filename: "./dist/stats.html",
+            open: true,
+            gzipSize: true,
+            brotliSize: true,
+            template: "treemap", // treemap, sunburst, network
+          }),
+        ]
+      : []),
   ],
   resolve: {
     alias: {
