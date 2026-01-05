@@ -42,7 +42,7 @@ export interface GlobalStats {
 // Constants
 const ROOM_TTL = 2 * 60 * 60; // 2 hours in seconds
 const ROOM_KEY_PREFIX = "room:";
-const EMPTY_ROOM_GRACE_PERIOD = 5 * 60 * 1000; // 5 minutes - grace period before deleting empty rooms
+const EMPTY_ROOM_GRACE_PERIOD = 60 * 60 * 1000; // 60 minutes - grace period before deleting empty rooms
 const STATS_CACHE_TTL = 30; // 30 seconds - cache active stats to reduce Redis load
 const STATS_CACHE_KEY = "stats:active:cache";
 
