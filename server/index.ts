@@ -9,7 +9,7 @@ import { securityHeaders } from "./security.js";
 import { createOpenAPIApp } from "./openapi.js";
 
 // Constants
-const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+const INACTIVITY_TIMEOUT = 120 * 60 * 1000; // 60 minutes
 const CLEANUP_INTERVAL = 60 * 1000; // 1 minute
 
 // State
