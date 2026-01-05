@@ -142,13 +142,13 @@ describe("RoomStorage", () => {
         id: "inactive",
         name: "Inactive User",
         vote: null,
-        lastActivity: now - 10 * 60 * 1000, // 10 minutes ago
+        lastActivity: now - 130 * 60 * 1000, // 130 minutes ago (past 120 min timeout)
       });
 
       await storage.updateRoom(room);
 
-      // Cleanup with 5 minute timeout
-      await storage.cleanupInactiveMembers(5 * 60 * 1000);
+      // Cleanup with 120 minute timeout (matches INACTIVITY_TIMEOUT)
+      await storage.cleanupInactiveMembers(120 * 60 * 1000);
 
       const updated = await storage.getRoom("ABC123");
       expect(updated?.members.size).toBe(1);
@@ -160,24 +160,24 @@ describe("RoomStorage", () => {
       const room = await storage.createRoom("ABC123");
       const now = Date.now();
 
-      // Set room creation time to be older than grace period (6 minutes ago)
-      room.createdAt = now - 6 * 60 * 1000;
+      // Set room creation time to be older than grace period (65 minutes ago, past 60 min grace period)
+      room.createdAt = now - 65 * 60 * 1000;
 
       room.members.set("inactive1", {
         id: "inactive1",
         name: "Inactive User 1",
         vote: null,
-        lastActivity: now - 10 * 60 * 1000,
+        lastActivity: now - 130 * 60 * 1000, // 130 minutes ago (past 120 min timeout)
       });
       room.members.set("inactive2", {
         id: "inactive2",
         name: "Inactive User 2",
         vote: null,
-        lastActivity: now - 10 * 60 * 1000,
+        lastActivity: now - 130 * 60 * 1000,
       });
 
       await storage.updateRoom(room);
-      await storage.cleanupInactiveMembers(5 * 60 * 1000);
+      await storage.cleanupInactiveMembers(120 * 60 * 1000);
 
       const deleted = await storage.getRoom("ABC123");
       expect(deleted).toBeNull();
@@ -187,19 +187,19 @@ describe("RoomStorage", () => {
       const room = await storage.createRoom("ABC123");
       const now = Date.now();
 
-      // Room created recently (within grace period)
-      room.createdAt = now - 2 * 60 * 1000; // 2 minutes ago
+      // Room created recently (within grace period - 30 minutes ago, less than 60 min grace period)
+      room.createdAt = now - 30 * 60 * 1000;
 
       // Add and then remove all members to make room empty
       room.members.set("user1", {
         id: "user1",
         name: "User 1",
         vote: null,
-        lastActivity: now - 10 * 60 * 1000, // Inactive
+        lastActivity: now - 130 * 60 * 1000, // 130 minutes ago (past 120 min timeout)
       });
 
       await storage.updateRoom(room);
-      await storage.cleanupInactiveMembers(5 * 60 * 1000);
+      await storage.cleanupInactiveMembers(120 * 60 * 1000);
 
       // Room should still exist because it's within grace period
       const stillExists = await storage.getRoom("ABC123");
@@ -216,11 +216,11 @@ describe("RoomStorage", () => {
         id: "active",
         name: "Active User",
         vote: null,
-        lastActivity: now - 2 * 60 * 1000, // 2 minutes ago
+        lastActivity: now - 30 * 60 * 1000, // 30 minutes ago (less than 120 min timeout)
       });
 
       await storage.updateRoom(room);
-      await storage.cleanupInactiveMembers(5 * 60 * 1000);
+      await storage.cleanupInactiveMembers(120 * 60 * 1000);
 
       const updated = await storage.getRoom("ABC123");
       expect(updated?.members.size).toBe(1);
@@ -239,18 +239,18 @@ describe("RoomStorage", () => {
       });
       await storage.updateRoom(room1);
 
-      // Room 2 - all inactive, created 6 minutes ago (past grace period)
+      // Room 2 - all inactive, created 65 minutes ago (past 60 min grace period)
       const room2 = await storage.createRoom("ROOM002");
-      room2.createdAt = now - 6 * 60 * 1000; // 6 minutes ago
+      room2.createdAt = now - 65 * 60 * 1000;
       room2.members.set("inactive", {
         id: "inactive",
         name: "Inactive",
         vote: null,
-        lastActivity: now - 10 * 60 * 1000,
+        lastActivity: now - 130 * 60 * 1000, // 130 minutes ago (past 120 min timeout)
       });
       await storage.updateRoom(room2);
 
-      await storage.cleanupInactiveMembers(5 * 60 * 1000);
+      await storage.cleanupInactiveMembers(120 * 60 * 1000);
 
       const room1Updated = await storage.getRoom("ROOM001");
       const room2Updated = await storage.getRoom("ROOM002");
@@ -277,7 +277,7 @@ describe("RoomStorage", () => {
       }
 
       // Run cleanup - should process all rooms without blocking
-      await storage.cleanupInactiveMembers(5 * 60 * 1000);
+      await storage.cleanupInactiveMembers(120 * 60 * 1000);
 
       // Verify all rooms still exist (all members are active)
       for (let i = 0; i < roomCount; i++) {
