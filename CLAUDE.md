@@ -7,12 +7,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a poker planning web application for agile task estimation using the Fibonacci sequence. Teams create dynamic rooms with shareable codes and estimate tasks collaboratively in real-time.
 
 **Tech Stack:**
-- **Frontend**: React 19, Tailwind CSS 4, TanStack Router
+- **Frontend**: Preact 10, Tailwind CSS 4, preact-iso (router)
 - **Backend**: Hono server with Server-Sent Events
 - **Storage**: Redis for room state persistence
 - **State**: Session cookies (httpOnly, 2h)
 - **PWA**: manifest.json for installable app
-- **Accessibility**: @axe-core/react for dev auditing
 
 ## Key Architecture
 
@@ -45,7 +44,7 @@ This is a poker planning web application for agile task estimation using the Fib
 - `src/hooks/useRoom.ts` - Room state and actions hook
 - `src/hooks/useKeyboardShortcuts.ts` - Keyboard shortcuts for voting, reveal, and reset
 - `src/hooks/useConfetti.ts` - Confetti animation on consensus
-- `src/routeTree.gen.ts` - TanStack Router configuration
+- `src/router.tsx` - preact-iso router configuration
 
 ## Development Commands
 
@@ -97,16 +96,10 @@ docker-compose up -d --build  # Build and run full stack (port 3001)
 - Shows gzip and brotli compressed sizes
 - Helps identify optimization opportunities
 - Current chunks:
-  - `react-vendor`: React + React DOM
-  - `router-vendor`: TanStack Router
-  - `query-vendor`: TanStack Query
+  - `preact-vendor`: Preact + Preact hooks
+  - `router-vendor`: preact-iso
 
 ## Accessibility
-
-### Development Tools
-- **@axe-core/react** runs automatically in dev mode
-- Reports accessibility violations in browser console
-- Checks against WCAG guidelines
 
 ### Accessibility Features
 - Form labels (visually hidden with `sr-only` class when needed)

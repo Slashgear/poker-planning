@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useParams } from "@tanstack/react-router";
+import { useState, useEffect, useRef, useCallback } from "preact/hooks";
+import { useRoute } from "preact-iso";
 import { useRoom } from "../hooks/useRoom";
 import { useConfetti } from "../hooks/useConfetti";
 import { useKeyboardShortcuts } from "../hooks/useKeyboardShortcuts";
@@ -91,7 +91,8 @@ function MemberCard({
 }
 
 export default function Room() {
-  const { code } = useParams({ from: "/room/$code" });
+  const { params } = useRoute();
+  const code = params.code as string;
   const {
     roomState,
     roomInfo,
@@ -205,7 +206,7 @@ export default function Room() {
     }
   }, [roomState?.showResults, revealCountdown]);
 
-  const handleJoin = async (e: React.FormEvent) => {
+  const handleJoin = async (e: Event) => {
     e.preventDefault();
     if (!name.trim()) return;
 
@@ -298,7 +299,7 @@ export default function Room() {
               name="firstName"
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName((e.target as HTMLInputElement).value)}
               placeholder="Enter your name"
               className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-purple-500"
               autoFocus
