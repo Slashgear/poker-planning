@@ -1,5 +1,4 @@
-import { Link } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect } from "preact/hooks";
 
 export default function NotFound() {
   useEffect(() => {
@@ -14,12 +13,12 @@ export default function NotFound() {
           The page you're looking for doesn't exist.
         </p>
 
-        <Link
-          to="/"
+        <a
+          href="/"
           className="inline-block bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg text-lg transition-colors shadow-lg"
         >
           Back to Home
-        </Link>
+        </a>
 
         <footer className="mt-16 text-xs text-purple-300/40">
           <a

@@ -1,10 +1,10 @@
-import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { useState } from "preact/hooks";
+import { useLocation } from "preact-iso";
 import { createRoom } from "../hooks/useRoom";
 import { APP_VERSION } from "../config";
 
 export default function Home() {
-  const navigate = useNavigate();
+  const { route } = useLocation();
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,7 +20,7 @@ export default function Home() {
       return;
     }
 
-    navigate({ to: "/room/$code", params: { code: result.code } });
+    route(`/room/${result.code}`);
   };
 
   return (

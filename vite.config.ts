@@ -1,19 +1,11 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import preact from "@preact/preset-vite";
 import path from "path";
 import { visualizer } from "rollup-plugin-visualizer";
 
-const ReactCompilerConfig = {
-  /* ... */
-};
-
 export default defineConfig({
   plugins: [
-    react({
-      babel: {
-        plugins: [["babel-plugin-react-compiler", ReactCompilerConfig]],
-      },
-    }),
+    preact(),
     ...(process.env.ANALYZE
       ? [
           visualizer({
@@ -37,9 +29,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           // Separate vendor chunks for better caching
-          "react-vendor": ["react", "react-dom"],
-          "router-vendor": ["@tanstack/react-router"],
-          "query-vendor": ["@tanstack/react-query"],
+          "preact-vendor": ["preact", "preact/hooks"],
+          "router-vendor": ["preact-iso"],
         },
       },
     },

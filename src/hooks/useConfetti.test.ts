@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { renderHook } from "@testing-library/react";
+import { renderHook } from "@testing-library/preact";
 import { useConfetti } from "./useConfetti";
 
 // Mock canvas-confetti with dynamic import support

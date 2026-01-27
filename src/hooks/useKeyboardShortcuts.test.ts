@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook } from "@testing-library/react";
+import { renderHook } from "@testing-library/preact";
 import { useKeyboardShortcuts } from "./useKeyboardShortcuts";
 
 describe("useKeyboardShortcuts", () => {
