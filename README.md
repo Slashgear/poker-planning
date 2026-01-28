@@ -64,10 +64,10 @@ Celebrate when everyone agrees!
 ## Tech Stack
 
 ### Frontend
-- **React 19** with TypeScript
+- **Preact 10** with TypeScript
 - **Vite 7** for build and dev server
 - **Tailwind CSS 4** for styling
-- **TanStack Router** for client-side routing
+- **preact-iso** for client-side routing
 
 ### Backend
 - **Hono** - Lightweight web framework
@@ -358,7 +358,7 @@ poker-planning/
 │   ├── hooks/          # Custom hooks
 │   │   ├── useRoom.ts  # Room state and actions
 │   │   └── useConfetti.ts
-│   ├── routeTree.gen.ts # TanStack Router configuration
+│   ├── router.tsx      # preact-iso router configuration
 │   ├── main.tsx
 │   └── index.css
 ├── tests/

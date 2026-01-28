@@ -123,7 +123,7 @@ pnpm format
 - Avoid `any`, prefer `unknown` if necessary
 - Use descriptive names for variables and functions
 
-### React
+### Preact
 
 - Functional components with hooks only
 - Use `useMemo` and `useCallback` judiciously for performance
@@ -228,8 +228,8 @@ server/          # Hono backend + SSE
   storage.ts     # Redis storage layer
   redis.ts       # Redis client wrapper
 src/
-  components/    # React UI components
-  hooks/         # Custom React hooks
+  components/    # Preact UI components
+  hooks/         # Custom Preact hooks
   lib/           # Utility functions
   types/         # TypeScript definitions
 tests/
