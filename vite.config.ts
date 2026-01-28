@@ -13,7 +13,7 @@ export default defineConfig({
             open: true,
             gzipSize: true,
             brotliSize: true,
-            template: "treemap", // treemap, sunburst, network
+            template: "treemap",
           }),
         ]
       : []),
@@ -24,21 +24,16 @@ export default defineConfig({
     },
   },
   build: {
-    // Optimize bundle splitting
     rollupOptions: {
       output: {
         manualChunks: {
-          // Separate vendor chunks for better caching
           "preact-vendor": ["preact", "preact/hooks"],
           "router-vendor": ["preact-iso"],
         },
       },
     },
-    // Use esbuild for fast minification (drop_console handled via plugin)
     minify: "esbuild",
-    // Improve chunk size warnings
     chunkSizeWarningLimit: 500,
-    // Enable source maps for production debugging (optional)
     sourcemap: false,
   },
 });
