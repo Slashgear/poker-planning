@@ -89,7 +89,7 @@ Celebrate when everyone agrees!
 
 ### Prerequisites
 
-- Node.js 22+
+- Node.js 24+
 - pnpm 10+
 - **Redis or Valkey** (local or remote instance)
 
