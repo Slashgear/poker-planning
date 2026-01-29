@@ -131,9 +131,30 @@ pnpm screenshots
 
 ## Conventions
 
-- **Commits**: Use Conventional Commits format (feat:, fix:, chore:, etc.)
-- **Pre-commit**: Husky runs format, lint, and typecheck before each commit
-- **Releases**: When creating a release, update version in package.json
+### Commits
+Use [Conventional Commits](https://www.conventionalcommits.org/) format:
+- `feat:` - New feature (minor version bump)
+- `fix:` - Bug fix (patch version bump)
+- `chore:` - Maintenance tasks
+- `docs:` - Documentation changes
+- `perf:` - Performance improvements
+- `refactor:` - Code refactoring
+- Breaking changes: Add `!` after type (e.g., `feat!:`) for major version bump
+
+### Pre-commit
+Husky runs format, lint, and typecheck before each commit.
+
+### Releases
+1. Review commits since last release to determine version bump (semver):
+   - `feat:` → minor (x.Y.0)
+   - `fix:` → patch (x.y.Z)
+   - Breaking change (`!`) → major (X.0.0)
+2. Run the version command:
+   ```bash
+   pnpm version <major|minor|patch> -m "chore: release v%s"
+   ```
+3. Push the commit and tag: `git push && git push --tags`
+4. GitHub Actions automatically creates the GitHub release from the tag
 
 ## Important Patterns
 
