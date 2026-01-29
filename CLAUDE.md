@@ -117,7 +117,7 @@ docker-compose up -d --build  # Build and run full stack (port 3001)
 - Comprehensive keywords and description
 
 ### Screenshots
-All screenshots (1280x720) stored in `docs/screenshots/`:
+All screenshots (1280x720) stored in `public/`:
 - `01-homepage.png`
 - `02-join-room.png`
 - `03-voting-session.png`

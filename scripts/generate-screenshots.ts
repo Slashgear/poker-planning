@@ -1,16 +1,9 @@
 import { chromium } from "@playwright/test";
 import { PlanningPage } from "../tests/helpers/planning-page";
-import { mkdir } from "fs/promises";
-import { existsSync } from "fs";
 
-const SCREENSHOTS_DIR = "./docs/screenshots";
+const SCREENSHOTS_DIR = "./public";
 
 async function generateScreenshots() {
-  // Create screenshots directory if it doesn't exist
-  if (!existsSync(SCREENSHOTS_DIR)) {
-    await mkdir(SCREENSHOTS_DIR, { recursive: true });
-  }
-
   const browser = await chromium.launch();
   const context = await browser.newContext({
     viewport: { width: 1280, height: 720 },
