@@ -1,7 +1,35 @@
 import { chromium } from "@playwright/test";
 import { PlanningPage } from "../tests/helpers/planning-page";
+import sharp from "sharp";
+import { readdir, stat } from "fs/promises";
 
 const SCREENSHOTS_DIR = "./public";
+
+const SCREENSHOT_FILES = [
+  "01-homepage.png",
+  "02-join-room.png",
+  "03-voting-session.png",
+  "04-results.png",
+  "05-consensus.png",
+];
+
+async function optimizeScreenshots() {
+  console.log("🗜️  Optimizing screenshots...");
+
+  for (const file of SCREENSHOT_FILES) {
+    const filePath = `${SCREENSHOTS_DIR}/${file}`;
+    const originalSize = (await stat(filePath)).size;
+
+    await sharp(filePath)
+      .png({ compressionLevel: 9, palette: true })
+      .toBuffer()
+      .then((buffer) => sharp(buffer).toFile(filePath));
+
+    const optimizedSize = (await stat(filePath)).size;
+    const savings = (((originalSize - optimizedSize) / originalSize) * 100).toFixed(1);
+    console.log(`   ${file}: ${(originalSize / 1024).toFixed(0)}KB → ${(optimizedSize / 1024).toFixed(0)}KB (-${savings}%)`);
+  }
+}
 
 async function generateScreenshots() {
   const browser = await chromium.launch();
@@ -117,7 +145,11 @@ async function generateScreenshots() {
     await context4.close();
     await joinPage.close();
 
-    console.log("✅ All screenshots generated successfully!");
+    console.log("✅ All screenshots generated!");
+
+    await optimizeScreenshots();
+
+    console.log("✅ Done!");
   } catch (error) {
     console.error("❌ Error generating screenshots:", error);
     throw error;

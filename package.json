@@ -44,10 +44,14 @@
     "oxlint": "1.42.0",
     "postcss": "8.5.6",
     "rollup-plugin-visualizer": "6.0.5",
+    "sharp": "^0.34.5",
     "tailwindcss": "4.1.18",
     "typescript": "5.9.3",
     "vite": "7.3.1",
     "vitest": "4.0.18"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": ["sharp"]
   },
   "dependencies": {
     "@hono/node-server": "1.19.9",
