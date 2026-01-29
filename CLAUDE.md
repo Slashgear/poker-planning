@@ -117,12 +117,17 @@ docker-compose up -d --build  # Build and run full stack (port 3001)
 - Comprehensive keywords and description
 
 ### Screenshots
-All screenshots (1280x720) stored in `public/`:
+All screenshots (1280x720) stored in `docs/screenshots/`:
 - `01-homepage.png`
 - `02-join-room.png`
 - `03-voting-session.png`
 - `04-results.png` (also used as og-image.png)
 - `05-consensus.png`
+
+To regenerate screenshots (requires running frontend on port 5173):
+```bash
+pnpm screenshots
+```
 
 ## Conventions
 
