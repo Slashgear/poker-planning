@@ -41,7 +41,66 @@ export default function Home() {
 
         {error && <p className="mt-4 text-red-400">{error}</p>}
 
-        <div className="mt-12 text-sm text-purple-300/70">
+        <section className="mt-16 max-w-2xl mx-auto">
+          <h2 className="text-xl font-semibold text-white mb-6">Why use this tool?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+            <div className="bg-white/5 rounded-lg p-4 border border-purple-500/20">
+              <h3 className="font-medium text-purple-200 mb-2">No account required</h3>
+              <p className="text-sm text-purple-300/70">
+                Just create a room and share the code. No signup, no login, no friction.
+              </p>
+            </div>
+            <div className="bg-white/5 rounded-lg p-4 border border-purple-500/20">
+              <h3 className="font-medium text-purple-200 mb-2">
+                Free, open-source & self-hostable
+              </h3>
+              <p className="text-sm text-purple-300/70">
+                No premium features, no limits.{" "}
+                <a
+                  href="https://github.com/Slashgear/poker-planning/blob/main/LICENSE"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-300 hover:text-purple-100 underline"
+                >
+                  MIT licensed
+                </a>
+                , easy to{" "}
+                <a
+                  href="https://github.com/Slashgear/poker-planning#quick-start"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-300 hover:text-purple-100 underline"
+                >
+                  deploy on your own server
+                </a>
+                .
+              </p>
+            </div>
+            <div className="bg-white/5 rounded-lg p-4 border border-purple-500/20">
+              <h3 className="font-medium text-purple-200 mb-2">Privacy-first, hosted in Europe</h3>
+              <p className="text-sm text-purple-300/70">
+                No tracking, no analytics, no data sold. This instance runs on{" "}
+                <a
+                  href="https://www.scaleway.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-300 hover:text-purple-100 underline"
+                >
+                  Scaleway
+                </a>{" "}
+                servers in Europe.
+              </p>
+            </div>
+            <div className="bg-white/5 rounded-lg p-4 border border-purple-500/20">
+              <h3 className="font-medium text-purple-200 mb-2">Lightweight & fast</h3>
+              <p className="text-sm text-purple-300/70">
+                Under 20KB transferred. Built with Preact, installable as a PWA.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <div className="mt-8 text-sm text-purple-300/70">
           <p>Rooms expire after 2 hours of inactivity</p>
         </div>
 
@@ -53,6 +112,15 @@ export default function Home() {
             className="hover:text-purple-300/70 transition-colors"
           >
             GitHub
+          </a>
+          <span className="mx-2">·</span>
+          <a
+            href="https://github.com/sponsors/Slashgear"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-purple-300/70 transition-colors"
+          >
+            Sponsor
           </a>
           <span className="mx-2">·</span>
           <span>v{APP_VERSION}</span>
