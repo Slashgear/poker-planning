@@ -30,7 +30,7 @@
   "author": "Antoine Caron (@Slashgear)",
   "license": "MIT",
   "devDependencies": {
-    "@playwright/test": "1.58.1",
+    "@playwright/test": "1.58.2",
     "@preact/preset-vite": "2.10.3",
     "@tailwindcss/postcss": "4.1.18",
     "@testing-library/preact": "3.2.4",
