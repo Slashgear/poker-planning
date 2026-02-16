@@ -58,7 +58,7 @@
   "dependencies": {
     "@hono/node-server": "1.19.9",
     "@hono/swagger-ui": "0.5.3",
-    "@hono/zod-openapi": "1.2.1",
+    "@hono/zod-openapi": "1.2.2",
     "canvas-confetti": "1.9.4",
     "hono": "4.11.9",
     "ioredis": "5.9.3",
