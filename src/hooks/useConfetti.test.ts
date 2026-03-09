@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from "vitest";
-import { renderHook } from "@testing-library/preact";
+import { describe, it, expect, vi, beforeEach } from "vitest";
+import { renderHook, act } from "@testing-library/preact";
 import { useConfetti } from "./useConfetti";
 
 // Mock canvas-confetti with dynamic import support
@@ -9,6 +9,10 @@ vi.mock("canvas-confetti", () => ({
 }));
 
 describe("useConfetti", () => {
+  beforeEach(() => {
+    mockConfetti.mockClear();
+  });
+
   it("returns fireConfetti function", () => {
     const { result } = renderHook(() => useConfetti());
 
@@ -21,7 +25,9 @@ describe("useConfetti", () => {
     mockConfetti.mockClear();
 
     const { result } = renderHook(() => useConfetti());
-    await result.current.fireConfetti();
+    await act(async () => {
+      await result.current.fireConfetti();
+    });
 
     // First two bursts are immediate (after import)
     expect(mockConfetti).toHaveBeenCalledTimes(2);
@@ -69,7 +75,9 @@ describe("useConfetti", () => {
     mockConfetti.mockClear();
 
     const { result } = renderHook(() => useConfetti());
-    await result.current.fireConfetti();
+    await act(async () => {
+      await result.current.fireConfetti();
+    });
 
     // Check that all calls include purple/pink colors
     mockConfetti.mock.calls.forEach((call) => {
@@ -93,5 +101,66 @@ describe("useConfetti", () => {
     const secondRef = result.current.fireConfetti;
 
     expect(firstRef).toBe(secondRef);
+  });
+
+  describe("idle preloading", () => {
+    it("calls requestIdleCallback on mount when available", () => {
+      const idleCallbackMock = vi.fn();
+      vi.stubGlobal("requestIdleCallback", idleCallbackMock);
+
+      renderHook(() => useConfetti());
+
+      expect(idleCallbackMock).toHaveBeenCalledWith(expect.any(Function));
+
+      vi.unstubAllGlobals();
+    });
+
+    it("falls back to setTimeout when requestIdleCallback is unavailable", () => {
+      // Remove requestIdleCallback to simulate environments without it (e.g. Safari < 16)
+      const originalRIC = (window as unknown as Record<string, unknown>).requestIdleCallback;
+      delete (window as unknown as Record<string, unknown>).requestIdleCallback;
+
+      vi.useFakeTimers();
+      const setTimeoutSpy = vi.spyOn(globalThis, "setTimeout");
+
+      renderHook(() => useConfetti());
+
+      expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 2000);
+
+      vi.useRealTimers();
+      setTimeoutSpy.mockRestore();
+      if (originalRIC !== undefined) {
+        (window as unknown as Record<string, unknown>).requestIdleCallback = originalRIC;
+      }
+    });
+
+    it("preloads confetti module during idle time so fireConfetti resolves without fresh fetch", async () => {
+      vi.useFakeTimers();
+      mockConfetti.mockClear();
+
+      const idleCallbacks: (() => void)[] = [];
+      vi.stubGlobal("requestIdleCallback", (cb: () => void) => {
+        idleCallbacks.push(cb);
+      });
+
+      renderHook(() => useConfetti());
+
+      // Trigger idle preload
+      await act(async () => {
+        idleCallbacks.forEach((cb) => cb());
+      });
+
+      // Now fire confetti — module should already be cached
+      const { result } = renderHook(() => useConfetti());
+      await act(async () => {
+        await result.current.fireConfetti();
+      });
+
+      // Confetti should fire immediately (cache hit — no second dynamic import needed)
+      expect(mockConfetti).toHaveBeenCalled();
+
+      vi.useRealTimers();
+      vi.unstubAllGlobals();
+    });
   });
 });

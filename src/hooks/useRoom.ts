@@ -138,26 +138,51 @@ export function useRoom(roomCode: string) {
     [roomCode],
   );
 
-  // SSE connection
+  // SSE connection with auto-reconnect on visibility/network restore
   useEffect(() => {
     fetchRoomInfo();
 
-    const eventSource = new EventSource(`${API_BASE}/api/rooms/${roomCode}/events`, {
-      withCredentials: true,
-    });
+    let eventSource: EventSource;
 
-    eventSource.addEventListener("update", (event) => {
-      const data = JSON.parse(event.data);
-      setRoomState(data);
-      setIsConnected(true);
-    });
+    const connect = () => {
+      eventSource = new EventSource(`${API_BASE}/api/rooms/${roomCode}/events`, {
+        withCredentials: true,
+      });
 
-    eventSource.onerror = () => {
-      setIsConnected(false);
+      eventSource.addEventListener("update", (event) => {
+        const data = JSON.parse(event.data);
+        setRoomState(data);
+        setIsConnected(true);
+      });
+
+      eventSource.onerror = () => {
+        setIsConnected(false);
+      };
     };
+
+    const reconnect = () => {
+      if (document.visibilityState === "visible") {
+        eventSource?.close();
+        fetchRoomInfo();
+        connect();
+      }
+    };
+
+    const handleOnline = () => {
+      eventSource?.close();
+      fetchRoomInfo();
+      connect();
+    };
+
+    connect();
+
+    document.addEventListener("visibilitychange", reconnect);
+    window.addEventListener("online", handleOnline);
 
     return () => {
       eventSource.close();
+      document.removeEventListener("visibilitychange", reconnect);
+      window.removeEventListener("online", handleOnline);
     };
   }, [roomCode, fetchRoomInfo]);
 

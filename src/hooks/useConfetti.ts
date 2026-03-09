@@ -1,9 +1,31 @@
-import { useCallback } from "preact/hooks";
+import { useCallback, useEffect } from "preact/hooks";
+
+// Module-level cache so the bundle is only fetched once
+let cachedConfetti: ((options: object) => void) | null = null;
+
+async function loadConfetti() {
+  if (!cachedConfetti) {
+    cachedConfetti = (await import("canvas-confetti")).default;
+  }
+  return cachedConfetti;
+}
 
 export function useConfetti() {
+  // Preload during browser idle time so confetti is ready when needed
+  useEffect(() => {
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(() => {
+        loadConfetti();
+      });
+    } else {
+      setTimeout(() => {
+        loadConfetti();
+      }, 2000);
+    }
+  }, []);
+
   const fireConfetti = useCallback(async () => {
-    // Lazy load canvas-confetti only when needed (consensus reached)
-    const confetti = (await import("canvas-confetti")).default;
+    const confetti = await loadConfetti();
 
     // First burst - left side
     confetti({
