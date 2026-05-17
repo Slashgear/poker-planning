@@ -62,7 +62,7 @@
     "canvas-confetti": "1.9.4",
     "hono": "4.12.19",
     "ioredis": "5.10.1",
-    "preact": "10.29.1",
+    "preact": "10.29.2",
     "preact-iso": "2.12.0",
     "tsx": "4.22.1",
     "zod": "4.4.3"
