@@ -40,14 +40,14 @@
     "happy-dom": "20.9.0",
     "husky": "9.1.7",
     "ioredis-mock": "8.13.1",
-    "oxfmt": "0.52.0",
-    "oxlint": "1.67.0",
+    "oxfmt": "0.53.0",
+    "oxlint": "1.68.0",
     "postcss": "8.5.15",
     "rollup-plugin-visualizer": "7.0.1",
     "sharp": "0.34.5",
     "tailwindcss": "4.3.0",
     "typescript": "5.9.3",
-    "vite": "7.3.3",
+    "vite": "7.3.5",
     "vitest": "4.0.18"
   },
   "pnpm": {
