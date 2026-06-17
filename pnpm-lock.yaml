@@ -61,8 +61,8 @@ importers:
         specifier: 10.5.0
         version: 10.5.0(postcss@8.5.15)
       happy-dom:
-        specifier: 20.10.4
-        version: 20.10.4
+        specifier: 20.10.5
+        version: 20.10.5
       husky:
         specifier: 9.1.7
         version: 9.1.7
@@ -95,7 +95,7 @@ importers:
         version: 7.3.5(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@24.13.2)(happy-dom@20.10.4)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1)
+        version: 4.0.18(@types/node@24.13.2)(happy-dom@20.10.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1)
 
 packages:
 
@@ -1607,8 +1607,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  happy-dom@20.10.4:
-    resolution: {integrity: sha512-bKrsQnFNpcjZG0UPsH7UMN7Oyp3AB42LXk2GuiQmu7l4QFxH7lsw5T1eWEtE2+vbIFrTC45sbNSB2pkB8MTfKA==}
+  happy-dom@20.10.5:
+    resolution: {integrity: sha512-0aA6BQoMnpcRE/c1E8ZyF2jXnET7MJskereWOXher4CJuYjrI5esN0Az/1NPMD4KeWUbampBGw2MGqabMPFIbg==}
     engines: {node: '>=20.0.0'}
 
   has-bigints@1.1.0:
@@ -3554,7 +3554,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  happy-dom@20.10.4:
+  happy-dom@20.10.5:
     dependencies:
       '@types/node': 24.13.2
       '@types/whatwg-mimetype': 3.0.2
@@ -4185,7 +4185,7 @@ snapshots:
       tsx: 4.22.4
       yaml: 2.8.1
 
-  vitest@4.0.18(@types/node@24.13.2)(happy-dom@20.10.4)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1):
+  vitest@4.0.18(@types/node@24.13.2)(happy-dom@20.10.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1):
     dependencies:
       '@vitest/expect': 4.0.18
       '@vitest/mocker': 4.0.18(vite@7.3.3(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1))
@@ -4209,7 +4209,7 @@ snapshots:
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 24.13.2
-      happy-dom: 20.10.4
+      happy-dom: 20.10.5
     transitivePeerDependencies:
       - jiti
       - less
