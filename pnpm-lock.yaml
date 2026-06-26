@@ -27,11 +27,11 @@ importers:
         specifier: 5.11.1
         version: 5.11.1
       preact:
-        specifier: 10.29.2
-        version: 10.29.2
+        specifier: 10.29.3
+        version: 10.29.3
       preact-iso:
         specifier: 2.12.0
-        version: 2.12.0(preact-render-to-string@6.6.5(preact@10.29.2))(preact@10.29.2)
+        version: 2.12.0(preact-render-to-string@6.6.5(preact@10.29.3))(preact@10.29.3)
       tsx:
         specifier: 4.22.4
         version: 4.22.4
@@ -44,13 +44,13 @@ importers:
         version: 1.58.2
       '@preact/preset-vite':
         specifier: 2.10.5
-        version: 2.10.5(@babel/core@7.28.5)(preact@10.29.2)(rollup@4.53.2)(vite@7.3.6(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1))
+        version: 2.10.5(@babel/core@7.28.5)(preact@10.29.3)(rollup@4.53.2)(vite@7.3.6(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1))
       '@tailwindcss/postcss':
         specifier: 4.3.1
         version: 4.3.1
       '@testing-library/preact':
         specifier: 3.2.4
-        version: 3.2.4(preact@10.29.2)
+        version: 3.2.4(preact@10.29.3)
       '@types/canvas-confetti':
         specifier: 1.9.0
         version: 1.9.0
@@ -1975,8 +1975,8 @@ packages:
     peerDependencies:
       preact: '>=10 || >= 11.0.0-0'
 
-  preact@10.29.2:
-    resolution: {integrity: sha512-7tNmwg/7mzzAoB/8kSg6Hl37JraAZw3Z3A0JSY7VXlZwo82Xn0G7wKbNNs2qoF4ZEEsQGTwDAroNdqKs1ofJxQ==}
+  preact@10.29.3:
+    resolution: {integrity: sha512-D9NL1GAnJZhc3RndVs4gDdxEeU9TcHgywMrhhOsnpdlvFjdbx0gAsLUnH6JEhlJH5giL7Tx5biWPUSEXE/HPzw==}
 
   pretty-format@27.5.1:
     resolution: {integrity: sha512-Qb1gy5OrP5+zDf2Bvnzdl3jsTf1qXVMazbvCoKhtKqVs4/YK4ozX4gKQJJVyNe+cajNPn0KoC0MC3FUmaHWEmQ==}
@@ -2924,12 +2924,12 @@ snapshots:
     dependencies:
       playwright: 1.58.2
 
-  '@preact/preset-vite@2.10.5(@babel/core@7.28.5)(preact@10.29.2)(rollup@4.53.2)(vite@7.3.6(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1))':
+  '@preact/preset-vite@2.10.5(@babel/core@7.28.5)(preact@10.29.3)(rollup@4.53.2)(vite@7.3.6(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx': 7.28.6(@babel/core@7.28.5)
       '@babel/plugin-transform-react-jsx-development': 7.27.1(@babel/core@7.28.5)
-      '@prefresh/vite': 2.4.11(preact@10.29.2)(vite@7.3.6(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1))
+      '@prefresh/vite': 2.4.11(preact@10.29.3)(vite@7.3.6(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1))
       '@rollup/pluginutils': 5.3.0(rollup@4.53.2)
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.28.5)
       debug: 4.4.3
@@ -2945,20 +2945,20 @@ snapshots:
 
   '@prefresh/babel-plugin@0.5.2': {}
 
-  '@prefresh/core@1.5.9(preact@10.29.2)':
+  '@prefresh/core@1.5.9(preact@10.29.3)':
     dependencies:
-      preact: 10.29.2
+      preact: 10.29.3
 
   '@prefresh/utils@1.2.1': {}
 
-  '@prefresh/vite@2.4.11(preact@10.29.2)(vite@7.3.6(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1))':
+  '@prefresh/vite@2.4.11(preact@10.29.3)(vite@7.3.6(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@prefresh/babel-plugin': 0.5.2
-      '@prefresh/core': 1.5.9(preact@10.29.2)
+      '@prefresh/core': 1.5.9(preact@10.29.3)
       '@prefresh/utils': 1.2.1
       '@rollup/pluginutils': 4.2.1
-      preact: 10.29.2
+      preact: 10.29.3
       vite: 7.3.6(@types/node@24.13.2)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.22.4)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
@@ -3124,10 +3124,10 @@ snapshots:
       lz-string: 1.5.0
       pretty-format: 27.5.1
 
-  '@testing-library/preact@3.2.4(preact@10.29.2)':
+  '@testing-library/preact@3.2.4(preact@10.29.3)':
     dependencies:
       '@testing-library/dom': 8.20.1
-      preact: 10.29.2
+      preact: 10.29.3
 
   '@types/aria-query@5.0.4': {}
 
@@ -3885,16 +3885,16 @@ snapshots:
 
   powershell-utils@0.1.0: {}
 
-  preact-iso@2.12.0(preact-render-to-string@6.6.5(preact@10.29.2))(preact@10.29.2):
+  preact-iso@2.12.0(preact-render-to-string@6.6.5(preact@10.29.3))(preact@10.29.3):
     dependencies:
-      preact: 10.29.2
-      preact-render-to-string: 6.6.5(preact@10.29.2)
+      preact: 10.29.3
+      preact-render-to-string: 6.6.5(preact@10.29.3)
 
-  preact-render-to-string@6.6.5(preact@10.29.2):
+  preact-render-to-string@6.6.5(preact@10.29.3):
     dependencies:
-      preact: 10.29.2
+      preact: 10.29.3
 
-  preact@10.29.2: {}
+  preact@10.29.3: {}
 
   pretty-format@27.5.1:
     dependencies:
