@@ -44,7 +44,7 @@
     "oxlint": "1.72.0",
     "postcss": "8.5.16",
     "rollup-plugin-visualizer": "7.0.1",
-    "sharp": "0.35.2",
+    "sharp": "0.35.3",
     "tailwindcss": "4.3.2",
     "typescript": "5.9.3",
     "vite": "7.3.6",
