@@ -42,7 +42,7 @@
     "ioredis-mock": "8.13.1",
     "oxfmt": "0.58.0",
     "oxlint": "1.73.0",
-    "postcss": "8.5.16",
+    "postcss": "8.5.17",
     "rollup-plugin-visualizer": "7.0.1",
     "sharp": "0.35.3",
     "tailwindcss": "4.3.2",
