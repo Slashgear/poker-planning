@@ -37,7 +37,7 @@
     "@types/canvas-confetti": "1.9.0",
     "@types/node": "24.13.3",
     "autoprefixer": "10.5.4",
-    "happy-dom": "20.11.2",
+    "happy-dom": "20.11.6",
     "husky": "9.1.7",
     "ioredis-mock": "8.13.1",
     "oxfmt": "0.64.0",
@@ -58,7 +58,7 @@
   "dependencies": {
     "@hono/node-server": "1.19.17",
     "@hono/swagger-ui": "0.6.1",
-    "@hono/zod-openapi": "1.6.0",
+    "@hono/zod-openapi": "1.6.1",
     "canvas-confetti": "1.9.4",
     "hono": "4.13.3",
     "ioredis": "5.11.1",
