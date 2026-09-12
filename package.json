@@ -37,7 +37,7 @@
     "@types/canvas-confetti": "1.9.0",
     "@types/node": "24.13.4",
     "autoprefixer": "10.5.6",
-    "happy-dom": "20.14.3",
+    "happy-dom": "20.14.5",
     "husky": "9.1.7",
     "ioredis-mock": "8.13.1",
     "oxfmt": "0.67.0",
