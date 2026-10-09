@@ -35,9 +35,9 @@
     "@tailwindcss/postcss": "4.3.3",
     "@testing-library/preact": "3.2.4",
     "@types/canvas-confetti": "1.9.0",
-    "@types/node": "24.19.1",
+    "@types/node": "24.19.2",
     "autoprefixer": "10.6.1",
-    "happy-dom": "20.14.5",
+    "happy-dom": "20.14.6",
     "husky": "9.1.7",
     "ioredis-mock": "8.13.1",
     "oxfmt": "0.72.0",
@@ -47,7 +47,7 @@
     "sharp": "0.35.5",
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
-    "vite": "7.3.6",
+    "vite": "7.3.7",
     "vitest": "4.0.18"
   },
   "pnpm": {
